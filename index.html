@@ -5175,6 +5175,14 @@ top: var(--app-header-total-padding, 20px);
                       <div class="plot-point-mini-star"></div>
                     </div>
                   </div>
+                  <div class="plot-point-auto-mode">
+                    <div class="plot-point-auto-mode-label">自动总结模式</div>
+                    <div class="plot-point-auto-mode-toggle" role="group" aria-label="自动总结模式">
+                      <button class="plot-point-auto-mode-btn is-active" type="button" data-mode="single">一次性调用</button>
+                      <button class="plot-point-auto-mode-btn" type="button" data-mode="split">分开调用</button>
+                    </div>
+                    <div class="plot-point-auto-mode-desc">一次性调用：聊天中同时输出回复与总结；分开调用：仅总结（后续情景）。</div>
+                  </div>
                   <div class="plot-point-auto-grid">
                     <div class="plot-point-auto-field">
                       <label class="plot-point-auto-label" for="plotPointAutoTime">时间间隔（分钟）</label>
@@ -6155,7 +6163,7 @@ top: var(--app-header-total-padding, 20px);
                 </label>
                 <textarea class="plot-point-textarea" id="plotPointContent" placeholder="描述这个剧情节点发生的事情..." rows="5"></textarea>
                 <div class="plot-point-char-count">
-                  <span id="plotPointCharCount">0</span> / 500
+                  <span id="plotPointCharCount">0</span> / 不限
                 </div>
               </div>
 
