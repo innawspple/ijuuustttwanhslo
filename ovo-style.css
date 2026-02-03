@@ -19241,6 +19241,102 @@
       margin: 0 auto;
     }
 
+    .chat-detail-screen.ghost-typing-active .chat-input-area {
+      bottom: var(--ghost-typing-keyboard-height, 220px) !important;
+    }
+
+    .chat-detail-screen.ghost-typing-active .chat-messages-area {
+      bottom: calc(var(--chat-input-height, 0px) + var(--ghost-typing-keyboard-height, 0px)) !important;
+    }
+
+    .chat-ghost-typing-panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 999;
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 10px 5px calc(30px + env(safe-area-inset-bottom, 0)) 5px;
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -8px 18px rgba(0, 0, 0, 0.06);
+      transform: translateY(100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .chat-ghost-typing-panel.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .chat-ghost-typing-keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .ghost-typing-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .ghost-key {
+      height: 40px;
+      width: 32px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      text-transform: uppercase;
+      transition: transform 0.05s ease, background 0.1s ease, color 0.1s ease;
+    }
+
+    .ghost-key-space {
+      width: 140px;
+    }
+
+    .ghost-key-backspace,
+    .ghost-key-enter {
+      width: 44px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .ghost-key-shift,
+    .ghost-key-123 {
+      width: 40px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .ghost-key-enter {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      box-shadow: none;
+    }
+
+    [data-theme="dark"] .ghost-key-enter {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+    }
+
+    .ghost-key.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      transform: scale(0.92);
+    }
+
     /* Attachment Button */
     .chat-attach-btn {
       width: 36px;
@@ -31385,6 +31481,14 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
+}
+
+.diary-book.diary-rendering {
+  visibility: hidden;
+}
+
+.diary-book.diary-rendering .diary-page {
+  transition: none !important;
 }
 
 /* 页面基础 */

@@ -976,6 +976,10 @@
                   <option value="">-- 请先拉取模型列表 --</option>
                 </select>
               </div>
+              <div class="settings-input-group">
+                <label class="settings-label">最大输出 (Max Output Tokens)</label>
+                <input type="text" class="settings-input" id="apiMaxOutputTokens" placeholder="例如：4096" />
+              </div>
               <div class="settings-btn-group">
                 <button class="settings-btn" onclick="clearAPIConfig()">清空</button>
                 <button class="settings-btn" onclick="testAPIConnection()">测试连接</button>
@@ -3093,6 +3097,51 @@
                 <svg viewBox="0 0 24 24">
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ghost Typing Keyboard -->
+          <div class="chat-ghost-typing-panel" id="chatGhostTypingPanel" aria-hidden="true">
+            <div class="chat-ghost-typing-keyboard">
+              <div class="ghost-typing-row">
+                <div class="ghost-key" data-key="q">q</div>
+                <div class="ghost-key" data-key="w">w</div>
+                <div class="ghost-key" data-key="e">e</div>
+                <div class="ghost-key" data-key="r">r</div>
+                <div class="ghost-key" data-key="t">t</div>
+                <div class="ghost-key" data-key="y">y</div>
+                <div class="ghost-key" data-key="u">u</div>
+                <div class="ghost-key" data-key="i">i</div>
+                <div class="ghost-key" data-key="o">o</div>
+                <div class="ghost-key" data-key="p">p</div>
+              </div>
+              <div class="ghost-typing-row">
+                <div class="ghost-key" data-key="a">a</div>
+                <div class="ghost-key" data-key="s">s</div>
+                <div class="ghost-key" data-key="d">d</div>
+                <div class="ghost-key" data-key="f">f</div>
+                <div class="ghost-key" data-key="g">g</div>
+                <div class="ghost-key" data-key="h">h</div>
+                <div class="ghost-key" data-key="j">j</div>
+                <div class="ghost-key" data-key="k">k</div>
+                <div class="ghost-key" data-key="l">l</div>
+              </div>
+              <div class="ghost-typing-row">
+                <div class="ghost-key ghost-key-shift" data-key="shift">⇧</div>
+                <div class="ghost-key" data-key="z">z</div>
+                <div class="ghost-key" data-key="x">x</div>
+                <div class="ghost-key" data-key="c">c</div>
+                <div class="ghost-key" data-key="v">v</div>
+                <div class="ghost-key" data-key="b">b</div>
+                <div class="ghost-key" data-key="n">n</div>
+                <div class="ghost-key" data-key="m">m</div>
+                <div class="ghost-key ghost-key-backspace" data-key="back">←</div>
+              </div>
+              <div class="ghost-typing-row">
+                <div class="ghost-key ghost-key-123" data-key="123">123</div>
+                <div class="ghost-key ghost-key-space" data-key=" "></div>
+                <div class="ghost-key ghost-key-enter" data-key="enter">↵</div>
               </div>
             </div>
           </div>
@@ -6000,6 +6049,21 @@ top: var(--app-header-total-padding, 20px);
                   </label>
                 </div>
 
+                <!-- 角色输入监视器 -->
+                <div class="affection-grid-label" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-top: 16px;">
+                  <div>
+                    <span style="font-size: 13px;">角色输入监视器</span>
+                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px; line-height: 1.4;">
+                      模拟角色输入过程与键盘按键，仅在当前聊天生效
+                    </div>
+                  </div>
+                  <label class="affection-toggle-modern" style="margin: 0; flex-shrink: 0;">
+                    <input type="checkbox" id="ghostTypingToggle" onchange="toggleGhostTypingMonitor(this.checked)">
+                    <span class="toggle-track"></span>
+                    <span class="toggle-thumb"></span>
+                  </label>
+                </div>
+
                 <!-- 定时主动发信息 -->
                 <div class="affection-grid-label" style="border-bottom: none; padding-bottom: 0; margin-top: 16px;">
                   <div style="flex: 1; margin-right: 14px;">
@@ -6049,6 +6113,28 @@ top: var(--app-header-total-padding, 20px);
                     <span class="toggle-track"></span>
                     <span class="toggle-thumb"></span>
                   </label>
+                </div>
+
+                <!-- 信息铃声 -->
+                <div class="affection-grid-label" style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 16px;">
+                  <div style="flex: 1; margin-right: 14px;">
+                    <span style="font-size: 13px;">信息铃声</span>
+                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px; line-height: 1.4;">
+                      输入音频链接（MP3/OGG/WAV），留空则使用全局铃声（全局为空则静音）
+                    </div>
+                    <input type="text" class="settings-input" id="chatMessageRingtoneInput" placeholder="https://example.com/message.mp3" onchange="saveChatRingtoneSettings()" style="margin-top: 10px; font-size: 12px;" />
+                  </div>
+                </div>
+
+                <!-- 来电铃声 -->
+                <div class="affection-grid-label" style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 16px; border-bottom: none; padding-bottom: 0;">
+                  <div style="flex: 1; margin-right: 14px;">
+                    <span style="font-size: 13px;">来电铃声</span>
+                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px; line-height: 1.4;">
+                      输入音频链接（MP3/OGG/WAV），留空则使用全局铃声（全局为空则静音）
+                    </div>
+                    <input type="text" class="settings-input" id="chatCallRingtoneInput" placeholder="https://example.com/call.mp3" onchange="saveChatRingtoneSettings()" style="margin-top: 10px; font-size: 12px;" />
+                  </div>
                 </div>
 
               </div>
@@ -8918,6 +9004,23 @@ top: var(--app-header-total-padding, 20px);
 
             <!-- 默认字体 - 横向滚动 -->
             <div class="default-fonts-scroll" id="defaultFontsGrid">
+              <!-- 系统字体 -->
+              <div class="font-card" data-font="system-ui" onclick="selectFont('system-ui', 'system')">
+                <div class="font-card-preview" style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                  <div class="font-preview-text">Aa</div>
+                  <div class="font-preview-sample">The quick brown fox</div>
+                </div>
+                <div class="font-card-label">
+                  <div class="font-card-name">系统字体</div>
+                  <div class="font-card-type">设备默认</div>
+                </div>
+                <div class="font-card-checkmark">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
               <!-- 默认字体：Inter -->
               <div class="font-card active" data-font="Inter" onclick="selectFont('Inter', 'default')">
                 <div class="font-card-preview" style="font-family: 'Inter', sans-serif;">
@@ -10004,6 +10107,38 @@ top: var(--app-header-total-padding, 20px);
                 <path d="M12 16v-4M12 8h.01" stroke-linecap="round"/>
               </svg>
               <span>全屏模式下可隐藏刘海屏并调整UI位置以获得更好的显示效果</span>
+            </div>
+          </div>
+
+          <!-- 铃声管理区域 -->
+          <div class="typography-section">
+            <div class="typography-section-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
+                <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-12 0v3.2c0 .53-.21 1.04-.6 1.4L4 17h5m6 0a3 3 0 0 1-6 0" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>铃声管理</span>
+            </div>
+
+            <div class="font-section-label">全局信息铃声</div>
+            <div class="custom-padding-input-row">
+              <div class="custom-padding-input-wrapper" style="flex: 1;">
+                <input type="text" id="globalMessageRingtoneInput" class="custom-padding-input" placeholder="https://example.com/message.mp3" onkeypress="if(event.key==='Enter') saveGlobalRingtoneSettings()">
+              </div>
+            </div>
+
+            <div class="font-section-label" style="margin-top: 16px;">全局来电铃声</div>
+            <div class="custom-padding-input-row">
+              <div class="custom-padding-input-wrapper" style="flex: 1;">
+                <input type="text" id="globalCallRingtoneInput" class="custom-padding-input" placeholder="https://example.com/call.mp3" onkeypress="if(event.key==='Enter') saveGlobalRingtoneSettings()">
+              </div>
+            </div>
+
+            <div class="custom-font-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px; margin-right: 6px; opacity: 0.4;">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01" stroke-linecap="round"/>
+              </svg>
+              <span>留空则不使用铃声，聊天可单独覆盖该设置</span>
             </div>
           </div>
         </div>
