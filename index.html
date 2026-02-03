@@ -1802,7 +1802,7 @@
             </div>
 
             <!-- Center Avatar -->
-            <div class="chat-nav-item center" onclick="toggleChatStyleSwitcher()">
+            <div class="chat-nav-item center" data-role="center">
               <div class="chat-nav-icon">
                 <img id="chatNavCenterAvatar" src="https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg" alt="Profile" onerror="this.src='https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg'">
               </div>
@@ -1836,20 +1836,20 @@
           <!-- Music Floating Dock -->
           <div class="chat-bottom-dock chat-bottom-dock-music" data-chat-dock="music">
             <div class="chat-music-dock" id="chatMusicDock">
-              <div class="chat-music-dock-bar">
-                <div class="chat-music-nav-group">
-                  <div class="chat-music-nav-btn active" data-nav="chats">
-                    <svg class="chat-music-star" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-                    </svg>
+            <div class="chat-music-dock-bar dock-items">
+              <div class="chat-music-nav-group">
+                <div class="chat-music-nav-btn dock-item active" data-nav="chats">
+                  <svg class="chat-music-star" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
+                  </svg>
                     <svg viewBox="0 0 24 24">
                       <path d="M21 11.5C21 16.1944 16.9706 20 12 20C10.6385 20 9.33678 19.7118 8.16431 19.1866L3.5 21L5.05943 16.7126C3.78423 15.3411 3 13.5137 3 11.5C3 6.80558 7.02944 3 12 3C16.9706 3 21 6.80558 21 11.5Z" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <div class="chat-music-nav-btn" data-nav="groups">
-                    <svg class="chat-music-star" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-                    </svg>
+                <div class="chat-music-nav-btn dock-item" data-nav="groups">
+                  <svg class="chat-music-star" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
+                  </svg>
                     <svg viewBox="0 0 24 24">
                       <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1859,7 +1859,7 @@
                   </div>
                 </div>
 
-                <div class="chat-music-center" onclick="toggleChatDockPlayback(); toggleChatStyleSwitcher();">
+                <div class="chat-music-center dock-item dock-item-center" data-role="center">
                   <div class="chat-music-orbit"></div>
                   <div class="chat-music-avatar">
                     <img id="chatNavCenterAvatarMusic" src="https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg" alt="Profile" onerror="this.src='https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg'">
@@ -1867,7 +1867,7 @@
                 </div>
 
                 <div class="chat-music-nav-group">
-                  <div class="chat-music-nav-btn" data-nav="moments">
+                  <div class="chat-music-nav-btn dock-item" data-nav="moments">
                     <svg class="chat-music-star" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
                     </svg>
@@ -1877,7 +1877,7 @@
                       <path d="M12 2.5C14.5 2.5 16 7 16 12C16 17 14.5 21.5 12 21.5C9.5 21.5 8 17 8 12C8 7 9.5 2.5 12 2.5Z" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <div class="chat-music-nav-btn" data-nav="user">
+                  <div class="chat-music-nav-btn dock-item" data-nav="user">
                     <svg class="chat-music-star" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
                     </svg>
@@ -1901,16 +1901,16 @@
           <!-- Starline Floating Dock -->
           <div class="chat-bottom-dock chat-bottom-dock-starline" data-chat-dock="starline">
             <div class="starline-dock-container">
-              <div class="starline-dock">
+              <div class="starline-dock dock-items">
                 <!-- 1. 聊天 (Chat) -->
-                <div class="dock-icon active" data-nav="chats" title="Chats">
+                <div class="dock-icon dock-item active" data-nav="chats" title="Chats">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                   </svg>
                 </div>
 
                 <!-- 2. 群组 (Groups) -->
-                <div class="dock-icon" data-nav="groups" title="Groups">
+                <div class="dock-icon dock-item" data-nav="groups" title="Groups">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
@@ -1920,7 +1920,7 @@
                 </div>
 
                 <!-- 3. 中间核心：头像 (Avatar) -->
-                <div class="dock-avatar-wrapper" onclick="toggleChatStyleSwitcher()">
+                <div class="dock-avatar-wrapper dock-item dock-item-center" data-role="center">
                   <div class="dock-orbit"></div>
                   <div class="dock-avatar">
                     <img id="chatNavCenterAvatarStarlineDock" src="https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg" alt="User" onerror="this.src='https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg'">
@@ -1928,14 +1928,14 @@
                 </div>
 
                 <!-- 4. 动态 (Moments/Star) -->
-                <div class="dock-icon" data-nav="moments" title="Moments">
+                <div class="dock-icon dock-item" data-nav="moments" title="Moments">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
                   </svg>
                 </div>
 
                 <!-- 5. 用户 (User Profile) -->
-                <div class="dock-icon" data-nav="user" title="Profile">
+                <div class="dock-icon dock-item" data-nav="user" title="Profile">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="8" r="5"></circle>
                     <path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"></path>
@@ -1948,7 +1948,7 @@
           <!-- Minimal Floating Dock -->
           <div class="chat-bottom-dock chat-bottom-dock-minimal" data-chat-dock="minimal">
             <nav class="dock-container">
-              <div class="dock-inner">
+              <div class="dock-inner dock-items">
                 <div class="active-indicator" id="chatMinimalDockIndicator"></div>
                 <div class="dock-item active" data-nav="chats">
                   <svg class="dock-icon" viewBox="0 0 24 24">
@@ -1962,7 +1962,7 @@
                     <polyline points="2 12 12 17 22 12"></polyline>
                   </svg>
                 </div>
-                <div class="center-avatar-wrapper" onclick="toggleChatStyleSwitcher()">
+                <div class="center-avatar-wrapper dock-item dock-item-center" data-role="center">
                   <div class="avatar-glow"></div>
                   <div class="avatar-inner">
                     <img id="chatNavCenterAvatarMinimal" src="https://ui-avatars.com/api/?name=User&background=000&color=fff" class="avatar-img" alt="User" onerror="this.src='https://ui-avatars.com/api/?name=User&background=000&color=fff'">
@@ -1995,17 +1995,17 @@
           <!-- Vertical Floating Dock -->
           <div class="chat-bottom-dock chat-bottom-dock-vertical" data-chat-dock="vertical">
             <div class="dock-container">
-              <div class="glass-pillar">
+              <div class="glass-pillar dock-items">
                 <div class="liquid-blob"></div>
 
-                <div class="nav-slot active" data-nav="chats">
+                <div class="nav-slot dock-item active" data-nav="chats">
                   <span class="tooltip-box">消息</span>
                   <svg viewBox="0 0 24 24">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                   </svg>
                 </div>
 
-                <div class="nav-slot" data-nav="groups">
+                <div class="nav-slot dock-item" data-nav="groups">
                   <span class="tooltip-box">群组</span>
                   <svg viewBox="0 0 24 24">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -2015,14 +2015,14 @@
                   </svg>
                 </div>
 
-                <div class="nav-slot" data-nav="moments">
+                <div class="nav-slot dock-item" data-nav="moments">
                   <span class="tooltip-box">动态</span>
                   <svg viewBox="0 0 24 24">
                     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                   </svg>
                 </div>
 
-                <div class="nav-slot" data-nav="user">
+                <div class="nav-slot dock-item" data-nav="user">
                   <span class="tooltip-box">联系人</span>
                   <svg viewBox="0 0 24 24">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -2034,7 +2034,7 @@
 
                 <div class="pill-divider"></div>
 
-                <div class="flux-avatar-container" onclick="toggleChatStyleSwitcher()">
+                <div class="flux-avatar-container dock-item dock-item-center" data-role="center">
                   <span class="tooltip-box">个人中心</span>
                   <div class="flux-ring"></div>
                   <img id="chatNavCenterAvatarVertical" src="https://ui-avatars.com/api/?name=Flux+User&background=000&color=fff" alt="User" class="user-img" onerror="this.src='https://ui-avatars.com/api/?name=Flux+User&background=000&color=fff'">
@@ -2051,7 +2051,7 @@
                 <path class="dock-arc-path" d="M0,20 Q150,45 300,20"></path>
               </svg>
 
-              <div class="dock-items-wrapper">
+              <div class="dock-items-wrapper dock-items">
                 <!-- Slot 1: 聊天 (Chats) -->
                 <div class="dock-item active" data-nav="chats">
                   <svg class="dock-icon-svg" viewBox="0 0 24 24">
@@ -2070,7 +2070,7 @@
                 </div>
 
                 <!-- Slot 3: 用户头像 (Avatar) -->
-                <div class="dock-item main-avatar" onclick="toggleChatStyleSwitcher()">
+                <div class="dock-item main-avatar dock-item-center" data-role="center">
                   <div class="avatar-ring"></div>
                   <img id="chatNavCenterAvatarPendant" src="https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg" class="avatar-img" alt="User" onerror="this.src='https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg'">
                 </div>
@@ -2105,7 +2105,7 @@
 
               <div class="dock-items">
                 <!-- 1. 聊天 -->
-                <div class="dock-item active" data-nav="chats" onclick="handleTimeDockNav('chats', this)">
+                <div class="dock-item active" data-nav="chats">
                   <div class="ripple"></div>
                   <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -2113,7 +2113,7 @@
                 </div>
 
                 <!-- 2. 群组 -->
-                <div class="dock-item" data-nav="groups" onclick="handleTimeDockNav('groups', this)">
+                <div class="dock-item" data-nav="groups">
                   <div class="ripple"></div>
                   <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -2124,7 +2124,7 @@
                 </div>
 
                 <!-- 3. 用户头像 (中心) -->
-                <div class="dock-item" onclick="handleTimeDockNav('center', this)">
+                <div class="dock-item dock-item-center" data-role="center">
                   <div class="ripple"></div>
                   <div class="my-avatar">
                     <img id="chatNavCenterAvatarTime" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop" alt="Me" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop'">
@@ -2132,7 +2132,7 @@
                 </div>
 
                 <!-- 4. 动态 (Moments) -->
-                <div class="dock-item" data-nav="moments" onclick="handleTimeDockNav('moments', this)">
+                <div class="dock-item" data-nav="moments">
                   <div class="ripple"></div>
                   <svg width="24" height="24" viewBox="0 0 24 24">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -2140,7 +2140,7 @@
                 </div>
 
                 <!-- 5. 菜单/用户 (Profile) -->
-                <div class="dock-item" data-nav="user" onclick="handleTimeDockNav('user', this)">
+                <div class="dock-item" data-nav="user">
                   <div class="ripple"></div>
                   <svg width="24" height="24" viewBox="0 0 24 24">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -2161,34 +2161,78 @@
                 <div class="scrubber-handle"></div>
               </div>
 
-              <div class="dock-controls">
+              <div class="dock-controls dock-items">
                 <!-- 1. 聊天 (Chat) - 用"列表/菜单"图标隐喻 -->
-                <button class="dock-btn active" onclick="activateTab(this)">
+                <button class="dock-btn dock-item active" data-nav="chats" type="button">
                   <svg class="dock-icon" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
                   <span class="dock-label">Menu</span>
                 </button>
 
                 <!-- 2. 群组 (Group) - 用"音量/频道"隐喻 -->
-                <button class="dock-btn" onclick="activateTab(this)">
+                <button class="dock-btn dock-item" data-nav="groups" type="button">
                   <svg class="dock-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
                   <span class="dock-label">Channel</span>
                 </button>
 
                 <!-- 3. 头像 (Avatar) - 中间大按钮 -->
-                <div class="dock-btn avatar-slot" onclick="activateTab(this)">
+                <div class="dock-btn avatar-slot dock-item dock-item-center" data-role="center">
                   <div class="avatar-wrapper">
                    <img id="chatNavCenterAvatarRetroDock" src="https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg" alt="User" onerror="this.src='https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg'">
                   </div>
                 </div>
 
                 <!-- 4. 动态 (Moments) - 用"下一首/快进"隐喻 -->
-                <button class="dock-btn" onclick="activateTab(this)">
+                <button class="dock-btn dock-item" data-nav="moments" type="button">
                   <svg class="dock-icon" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                   <span class="dock-label">Next</span>
                 </button>
 
                 <!-- 5. 用户 (User) - 用"设置/全屏"隐喻 -->
-                <button class="dock-btn" onclick="activateTab(this)">
+                <button class="dock-btn dock-item" data-nav="user" type="button">
+                  <svg class="dock-icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.09.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                  <span class="dock-label">Setup</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- LoveTube Dock -->
+          <div class="chat-bottom-dock chat-bottom-dock-lovetube" data-chat-dock="lovetube">
+            <div class="lovetube-dock">
+              <!-- 装饰性进度条 -->
+              <div class="scrubber-bar">
+                <div class="scrubber-progress"></div>
+                <div class="scrubber-handle"></div>
+              </div>
+
+              <div class="dock-controls dock-items">
+                <!-- 1. 聊天 (Chat) - 用"列表/菜单"图标隐喻 -->
+                <button class="dock-btn dock-item active" data-nav="chats" type="button">
+                  <svg class="dock-icon" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+                  <span class="dock-label">Menu</span>
+                </button>
+
+                <!-- 2. 群组 (Group) - 用"音量/频道"隐喻 -->
+                <button class="dock-btn dock-item" data-nav="groups" type="button">
+                  <svg class="dock-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+                  <span class="dock-label">Channel</span>
+                </button>
+
+                <!-- 3. 头像 (Avatar) - 中间大按钮 -->
+                <div class="dock-btn avatar-slot dock-item dock-item-center" data-role="center">
+                  <div class="avatar-wrapper">
+                   <img id="chatNavCenterAvatarLovetube" src="https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg" alt="User" onerror="this.src='https://i.postimg.cc/4xmx7V4R/mmexport1759081128356.jpg'">
+                  </div>
+                </div>
+
+                <!-- 4. 动态 (Moments) - 用"下一首/快进"隐喻 -->
+                <button class="dock-btn dock-item" data-nav="moments" type="button">
+                  <svg class="dock-icon" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                  <span class="dock-label">Next</span>
+                </button>
+
+                <!-- 5. 用户 (User) - 用"设置/全屏"隐喻 -->
+                <button class="dock-btn dock-item" data-nav="user" type="button">
                   <svg class="dock-icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.09.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                   <span class="dock-label">Setup</span>
                 </button>
@@ -4891,6 +4935,27 @@ top: var(--app-header-total-padding, 20px);
                 <div class="chat-dock-card-info">
                   <div class="chat-dock-card-name">时光底栏</div>
                   <div class="chat-dock-card-desc">流体山丘</div>
+                  <div class="chat-dock-card-checkmark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="chat-dock-card" data-dock="lovetube" onclick="switchChatDockStyle('lovetube')">
+                <div class="chat-dock-preview chat-dock-preview-lovetube">
+                  <div class="chat-dock-preview-lovetube-bar"></div>
+                  <div class="chat-dock-preview-lovetube-items">
+                    <span class="chat-dock-preview-lovetube-dot"></span>
+                    <span class="chat-dock-preview-lovetube-dot"></span>
+                    <span class="chat-dock-preview-lovetube-avatar"></span>
+                    <span class="chat-dock-preview-lovetube-dot"></span>
+                    <span class="chat-dock-preview-lovetube-dot"></span>
+                  </div>
+                </div>
+                <div class="chat-dock-card-info">
+                  <div class="chat-dock-card-name">LoveTube底栏</div>
+                  <div class="chat-dock-card-desc">复古播放器</div>
                   <div class="chat-dock-card-checkmark">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                       <polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/>
