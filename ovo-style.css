@@ -22524,6 +22524,10 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
+    [data-theme='dark'] .plot-point-auto-mode-btn.is-active {
+      color: #000000;
+    }
+
     .plot-point-auto-mode-btn:focus-visible {
       outline: 2px solid var(--accent-color);
       outline-offset: 2px;
@@ -24354,26 +24358,27 @@
     }
 
     .message-checkbox {
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--border-color);
-      border-radius: 6px;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
       background: var(--bg-primary);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
     }
 
     .message-checkbox:hover {
-      border-color: var(--accent-color);
-      transform: scale(1.1);
+      border-color: var(--text-primary);
+      background: var(--bg-secondary);
+      transform: translateY(-1px);
     }
 
     .message-checkbox.checked {
-      background: var(--accent-color);
-      border-color: var(--accent-color);
+      background: var(--text-primary);
+      border-color: var(--text-primary);
     }
 
     .message-checkbox.checked svg {
@@ -24381,10 +24386,10 @@
     }
 
     .message-checkbox svg {
-      width: 12px;
-      height: 12px;
-      stroke: white;
-      stroke-width: 3;
+      width: 11px;
+      height: 11px;
+      stroke: var(--bg-primary);
+      stroke-width: 2.4;
       fill: none;
       display: none;
     }
@@ -24392,66 +24397,77 @@
     /* Message selection toolbar */
     .message-selection-toolbar {
       position: fixed;
-      bottom: 12px; /* 从底部抬起一点 */
+      bottom: 14px; /* 从底部抬起一点 */
       left: 50%; /* 水平居中 */
       transform: translateX(-50%) translateY(100%); /* 居中 + 隐藏动画 */
-      background: var(--bg-secondary);
+      background: var(--bg-primary);
       border: 1px solid var(--border-color);
-      border-radius: 16px; /* 圆角胶囊设计 */
-      padding: 10px 16px;
+      border-radius: 4px;
+      padding: 10px 18px;
       display: none;
       align-items: center;
-      gap: 12px; /* 信息和按钮之间的间距 */
+      gap: 16px; /* 信息和按钮之间的间距 */
       z-index: 9000000;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      max-width: 90%; /* 限制最大宽度 */
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      max-width: 92%; /* 限制最大宽度 */
       width: auto; /* 自适应内容宽度 */
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
     }
 
     .message-selection-toolbar.active {
       display: flex;
       transform: translateX(-50%) translateY(0); /* 显示时只保留居中，不偏移Y */
+      opacity: 1;
     }
 
     .selection-toolbar-info {
-      font-size: 13px;
-      color: var(--text-secondary);
-      font-weight: 500;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       white-space: nowrap; /* 防止换行 */
     }
 
     .selection-toolbar-actions {
       display: flex;
-      gap: 6px; /* 按钮之间更紧凑 */
+      gap: 8px; /* 按钮之间更紧凑 */
     }
 
     .selection-toolbar-btn {
-      padding: 6px 14px; /* 更紧凑的内边距 */
-      border-radius: 12px; /* 圆角胶囊 */
-      font-size: 13px;
-      font-weight: 500;
+      padding: 6px 12px; /* 更紧凑的内边距 */
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
       border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      background: transparent;
+      color: var(--text-tertiary);
       white-space: nowrap; /* 防止换行 */
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .selection-toolbar-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      color: var(--text-primary);
+      border-color: var(--text-primary);
+      background: var(--bg-secondary);
+      transform: translateY(-1px);
     }
 
     .selection-toolbar-btn:active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-color: var(--text-primary);
       transform: translateY(0);
     }
 
     .selection-toolbar-btn.danger {
-      background: #ef4444;
-      border-color: #ef4444;
-      color: white;
+      color: var(--text-primary);
+      border-color: var(--text-primary);
     }
 
     .selection-toolbar-btn.danger:hover {
@@ -27761,6 +27777,13 @@
       height: 100%;
       overflow: hidden;
       scrollbar-width: none;
+    }
+    #chatScreen.chat-style-search .chat-settings-screen .app-content {
+      height: auto;
+      overflow: visible;
+      padding: 20px !important;
+      padding-top: var(--app-header-total-padding) !important;
+      padding-bottom: 60px !important;
     }
 
     #chatScreen.chat-style-search .app-content::-webkit-scrollbar {
@@ -37542,6 +37565,11 @@ body.message-action-open .message-action-highlight .chat-message-timestamp {
   transition: background 0.12s ease;
 }
 
+.action-menu-item.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
 .action-menu-item:hover {
   background: rgba(0, 0, 0, 0.04);
 }
@@ -38204,6 +38232,101 @@ body.message-action-open {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* ========== 撤回系统消息（可查看原文） ========== */
+.chat-system-recall-message {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.chat-system-recall-message .tickle-content {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.chat-system-recall-message .tickle-content:active {
+  transform: scale(0.98);
+}
+
+.chat-system-recall-message .recall-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px dashed var(--border-color);
+  border-radius: 16px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  appearance: none;
+  font-family: inherit;
+}
+
+.chat-system-recall-message .recall-badge:active {
+  transform: scale(0.98);
+  background: var(--hover-bg);
+}
+
+[data-theme='dark'] .chat-system-recall-message .recall-badge {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.chat-system-recall-message .recall-star {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  opacity: 0.8;
+  animation: recallStarSpin 10s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes recallStarSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.chat-system-recall-message .recall-ghost {
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, margin-top 0.3s ease;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  padding: 0 8px;
+}
+
+.chat-system-recall-message.peek-active .recall-ghost {
+  max-height: 50vh;
+  margin-top: 6px;
+}
+
+.chat-system-recall-message .recall-ghost-text {
+  display: inline;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  opacity: 0;
+  transform: translateX(10px);
+  white-space: pre-wrap;
+  background-image: linear-gradient(var(--text-tertiary), var(--text-tertiary));
+  background-position: 0% 55%;
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  transition: opacity 0.4s ease, transform 0.4s ease, background-size 0.6s 0.2s ease;
+}
+
+.chat-system-recall-message.peek-active .recall-ghost-text {
+  opacity: 0.65;
+  transform: translateX(0);
+  background-size: 100% 1px;
 }
 
 /* ========== End 拍一拍系统消息 ========== */

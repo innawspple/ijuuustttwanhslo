@@ -3180,9 +3180,9 @@
                 <svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
               </div>
               <div class="action-menu-divider"></div>
-              <div class="action-menu-item" onclick="messageTranslate()">
-                <span class="action-menu-text">Translate</span>
-                <svg viewBox="0 0 24 24"><path d="M3 5h8M7 3v2M5.5 5c.8 2.5 2 4 4.5 6"/><path d="M13 21l3-7 3 7"/><path d="M14.5 18h5"/><path d="M10 12L3 19"/></svg>
+              <div class="action-menu-item" id="messageRecallAction" onclick="messageRecall()">
+                <span class="action-menu-text">Recall</span>
+                  <svg viewBox="0 0 24 24"><path d="M9 14l-4-4 4-4"/><path d="M5 10h10a5 5 0 1 1 0 10h-1"/></svg>
               </div>
               <div class="action-menu-divider"></div>
               <div class="action-menu-item" onclick="messageMore()">
@@ -5549,7 +5549,7 @@ top: var(--app-header-total-padding, 20px);
                     <span class="theme-label-value" id="chatThemeBubbleSizeValue">1.0</span>
                   </label>
                   <div class="theme-slider-container">
-                    <input type="range" class="theme-slider" id="chatThemeBubbleSize" min="0.8" max="1.2" step="0.1" value="1.0" oninput="updateBubbleSizeValue(this.value); applyChatSettingsThemePreview();" />
+                    <input type="range" class="theme-slider" id="chatThemeBubbleSize" min="0.6" max="1.6" step="0.1" value="1.0" oninput="handleChatThemeBubbleSizeInput(this.value);" />
                     <div class="theme-slider-track"></div>
                     <div class="theme-slider-labels">
                       <span>紧凑</span>
