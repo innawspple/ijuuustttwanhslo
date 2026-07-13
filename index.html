@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+  文件：ovo.html
+  内容：OVO 手机网页主入口。包含 PWA meta、桌面/状态栏/弹窗 DOM、各 App screen 的 HTML 结构，以及底部加载 ovo-call.js、ovo-update-logs.js、ovo-script.js。
+  查找提示：页面入口、App screen DOM、内联 onclick、CSS/JS 引用都从这里开始。
+-->
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -31,7 +36,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
-  <link rel="stylesheet" href="ovo-style.css">
+  <link rel="stylesheet" href="css/ovo-base-desktop.css?v=2026-07-13-web-auto-update-1">
+  <link rel="stylesheet" href="css/ovo-settings-appearance.css?v=2026-07-13-web-auto-update-1">
+  <link rel="stylesheet" href="css/ovo-characters.css?v=2026-07-13-web-auto-update-1">
+  <link rel="stylesheet" href="css/ovo-chat.css?v=2026-07-13-web-auto-update-1">
+  <link rel="stylesheet" href="css/ovo-media-phone-social.css?v=2026-07-13-web-auto-update-1">
   <!-- Remix Icons（Slate 编辑器用到） -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
   <!-- 扩展字体 - 字体选择器可用 -->
@@ -681,7 +690,7 @@
               </div>
               <div class="settings-logo-text">全局设置</div>
             </div>
-            <div class="settings-header-actions">
+          <div class="settings-header-actions">
               <div class="settings-icon-btn" onclick="closeApp()" title="关闭">
                 <svg viewBox="0 0 24 24">
                   <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
@@ -749,67 +758,153 @@
             </div>
           </div>
 
+          <!-- 设置模式 -->
+          <div class="settings-section">
+            <div class="settings-section-header">设置模式</div>
+            <div class="settings-card">
+              <div class="settings-btn-group" style="margin-top: 0;">
+                <button class="settings-btn primary" id="settingsPlatformWebBtn" onclick="selectSettingsPlatformMode('web')" type="button">网页设置</button>
+                <button class="settings-btn" id="settingsPlatformApkBtn" onclick="selectSettingsPlatformMode('apk')" type="button">APK 设置</button>
+              </div>
+              <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;" id="settingsPlatformModeDesc">
+                正在检测当前运行环境...
+              </div>
+            </div>
+          </div>
+
           <!-- 后台回复通知 -->
           <div class="settings-section">
             <div class="settings-section-header">通知</div>
             <div class="settings-card">
-              <div class="data-management-item" style="padding: 0;">
-                <div class="data-management-info">
-                  <div class="data-management-title">
-                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
-                      <path d="M6 5h12v14H6V5zm2 2v10h8V7H8zm2 2h4v2h-4V9zm0 4h4v2h-4v-2z" fill="currentColor"/>
-                    </svg>
-                    后台音频保活
+              <div data-settings-platform="web">
+                <div class="data-management-item" style="padding: 0;">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M6 5h12v14H6V5zm2 2v10h8V7H8zm2 2h4v2h-4V9zm0 4h4v2h-4v-2z" fill="currentColor"/>
+                      </svg>
+                      后台音频保活
+                    </div>
+                    <div class="data-management-desc" id="audioKeepAliveDesc">开启后持续播放静音音频，降低后台挂起概率</div>
                   </div>
-                  <div class="data-management-desc" id="audioKeepAliveDesc">开启后持续播放静音音频，降低后台挂起概率</div>
+                  <label class="toggle-switch" title="开启后台音频保活">
+                    <input type="checkbox" id="audioKeepAliveToggle" onchange="toggleAudioKeepAlive()">
+                    <span class="toggle-slider"></span>
+                  </label>
                 </div>
-                <label class="toggle-switch" title="开启后台音频保活">
-                  <input type="checkbox" id="audioKeepAliveToggle" onchange="toggleAudioKeepAlive()">
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <div class="data-management-divider"></div>
-              <div class="data-management-item" style="padding: 0;">
-                <div class="data-management-info">
-                  <div class="data-management-title">
-                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
-                      <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    后台回复通知
+                <div class="data-management-divider"></div>
+                <div class="data-management-item" style="padding: 0;">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                      后台回复通知
+                    </div>
+                    <div class="data-management-desc" id="browserReplyNotificationDesc">切后台时，角色回复会推送系统通知</div>
                   </div>
-                  <div class="data-management-desc" id="browserReplyNotificationDesc">切后台时，角色回复会推送系统通知</div>
+                  <label class="toggle-switch" title="开启后台回复通知">
+                    <input type="checkbox" id="browserReplyNotificationToggle" onchange="toggleBrowserReplyNotification()">
+                    <span class="toggle-slider"></span>
+                  </label>
                 </div>
-                <label class="toggle-switch" title="开启后台回复通知">
-                  <input type="checkbox" id="browserReplyNotificationToggle" onchange="toggleBrowserReplyNotification()">
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <div class="data-management-divider"></div>
-              <div class="data-management-item" style="padding: 0; margin-top: 10px;">
-                <div class="data-management-info">
-                  <div class="data-management-title">
-                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
-                      <path d="M12 3v4M18.364 5.636l-2.828 2.828M21 12h-4M18.364 18.364l-2.828-2.828M12 21v-4M5.636 18.364l2.828-2.828M3 12h4M5.636 5.636l2.828 2.828" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <circle cx="12" cy="12" r="3" stroke="currentColor" fill="none" stroke-width="2"/>
-                    </svg>
-                    通知测试模式
+                <div class="data-management-divider"></div>
+                <div class="data-management-item" style="padding: 0; margin-top: 10px;">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M12 3v4M18.364 5.636l-2.828 2.828M21 12h-4M18.364 18.364l-2.828-2.828M12 21v-4M5.636 18.364l2.828-2.828M3 12h4M5.636 5.636l2.828 2.828" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" fill="none" stroke-width="2"/>
+                      </svg>
+                      通知测试模式
+                    </div>
+                    <div class="data-management-desc" id="browserReplyNotificationTestModeDesc">开启后，即使不切后台也会弹系统通知（用于测试）</div>
                   </div>
-                  <div class="data-management-desc" id="browserReplyNotificationTestModeDesc">开启后，即使不切后台也会弹系统通知（用于测试）</div>
+                  <label class="toggle-switch" title="开启通知测试模式（前台也弹通知）">
+                    <input type="checkbox" id="browserReplyNotificationTestModeToggle" onchange="toggleBrowserReplyNotificationTestMode()">
+                    <span class="toggle-slider"></span>
+                  </label>
                 </div>
-                <label class="toggle-switch" title="开启通知测试模式（前台也弹通知）">
-                  <input type="checkbox" id="browserReplyNotificationTestModeToggle" onchange="toggleBrowserReplyNotificationTestMode()">
-                  <span class="toggle-slider"></span>
-                </label>
+                <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 10px; line-height: 1.4;" id="browserReplyNotificationHint">
+                  需要浏览器授权通知权限。仅在页面未关闭且仍在运行时生效。
+                </div>
+                <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 6px; line-height: 1.4;" id="browserReplyNotificationTestModeHint">
+                  建议测试完关闭，避免前台频繁弹通知影响体验。
+                </div>
+                <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 8px; line-height: 1.5; opacity: 0.9;" id="browserReplyNotificationDebugInfo">
+                  调试信息：加载中…
+                </div>
               </div>
-              <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 10px; line-height: 1.4;" id="browserReplyNotificationHint">
-                需要浏览器授权通知权限。仅在页面未关闭且仍在运行时生效。
-              </div>
-              <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 6px; line-height: 1.4;" id="browserReplyNotificationTestModeHint">
-                建议测试完关闭，避免前台频繁弹通知影响体验。
-              </div>
-              <div style="font-size: 10px; color: var(--text-tertiary); margin-top: 8px; line-height: 1.5; opacity: 0.9;" id="browserReplyNotificationDebugInfo">
-                调试信息：加载中…
+              <div data-settings-platform="apk" style="display: none;">
+                <div class="data-management-item" style="padding: 0;">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M4 14v-4a1 1 0 0 1 1-1h3l4-3v12l-4-3H5a1 1 0 0 1-1-1Z" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 9a4 4 0 0 1 0 6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M18.5 6.5a7.5 7.5 0 0 1 0 11" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                      后台音频保活
+                    </div>
+                    <div class="data-management-desc" id="apkAudioKeepAliveDesc">APK 模式会启动原生前台媒体服务，持续播放静音音频</div>
+                  </div>
+                  <label class="toggle-switch" title="开启 APK 后台音频保活">
+                    <input type="checkbox" id="apkAudioKeepAliveToggle" onchange="toggleApkAudioKeepAlive()">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="data-management-divider"></div>
+                <div class="data-management-item" style="padding: 0;">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                      后台回复通知
+                    </div>
+                    <div class="data-management-desc" id="apkReplyNotificationDesc">APK 模式下将调用系统原生通知</div>
+                  </div>
+                  <label class="toggle-switch" title="开启 APK 后台回复通知">
+                    <input type="checkbox" id="apkReplyNotificationToggle" onchange="toggleApkReplyNotification()">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="data-management-divider"></div>
+                <div class="data-management-item" style="padding: 0; margin-top: 10px;">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="4" stroke="currentColor" fill="none" stroke-width="2"/>
+                      </svg>
+                      后台保护 / 锁后台
+                    </div>
+                    <div class="data-management-desc" id="apkBackgroundProtectionDesc">可手动前往系统设置，允许后台运行或关闭电池优化限制</div>
+                  </div>
+                  <button class="settings-btn" id="apkBackgroundProtectionBtn" onclick="openApkBackgroundProtectionSettings()">前往</button>
+                </div>
+                <div class="data-management-divider"></div>
+                <div class="data-management-item" style="padding: 0; margin-top: 10px;">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M12 3v4M18.364 5.636l-2.828 2.828M21 12h-4M18.364 18.364l-2.828-2.828M12 21v-4M5.636 18.364l2.828-2.828M3 12h4M5.636 5.636l2.828 2.828" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" fill="none" stroke-width="2"/>
+                      </svg>
+                      通知权限
+                    </div>
+                    <div class="data-management-desc" id="apkNotificationPermissionDesc">正在检测系统通知权限...</div>
+                  </div>
+                  <button class="settings-btn" id="apkNotificationPermissionBtn" onclick="requestApkNotificationPermission()">授权</button>
+                </div>
+                <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 10px; line-height: 1.5;" id="apkAudioKeepAliveHint">
+                  开启后会显示常驻媒体通知，并持续播放静音音频；如果系统仍清后台，建议再去设置里允许后台运行。
+                </div>
+                <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 10px; line-height: 1.5;" id="apkNotificationPermissionHint">
+                  APK 会走系统原生通知渠道；权限已开启时，不会重复弹授权。
+                </div>
               </div>
             </div>
           </div>
@@ -818,6 +913,18 @@
           <div class="settings-section">
             <div class="settings-section-header">数据管理</div>
             <div class="settings-card">
+              <div class="data-management-item">
+                <div class="data-management-info">
+                  <div class="data-management-title">
+                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                      <path d="M4 6h16v12H4V6zm2 2v8h12V8H6zm2 2h8v2H8v-2z" fill="currentColor"/>
+                    </svg>
+                    本地数据存储位置
+                  </div>
+                  <div class="data-management-desc" id="settingsStorageLocationDesc">正在检测当前平台...</div>
+                </div>
+              </div>
+              <div class="data-management-divider"></div>
               <!-- 🔥 【老王新增】存储使用情况 -->
               <div class="data-management-item">
                 <div class="data-management-info">
@@ -831,18 +938,20 @@
                 </div>
                 <button class="settings-btn" onclick="openDataManager()">管理</button>
               </div>
-              <div class="data-management-divider"></div>
-              <div class="data-management-item">
-                <div class="data-management-info">
-                  <div class="data-management-title">
-                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
-                      <path d="M5 4h14v16H5V4zm2 2v12h10V6H7zm2 2h6v2H9V8zm0 4h6v2H9v-2z" fill="currentColor"/>
-                    </svg>
-                    持久化存储
+              <div data-settings-platform="web">
+                <div class="data-management-divider"></div>
+                <div class="data-management-item">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M5 4h14v16H5V4zm2 2v12h10V6H7zm2 2h6v2H9V8zm0 4h6v2H9v-2z" fill="currentColor"/>
+                      </svg>
+                      持久化存储
+                    </div>
+                    <div class="data-management-desc" id="persistentStorageInfo">未检测</div>
                   </div>
-                  <div class="data-management-desc" id="persistentStorageInfo">未检测</div>
+                  <button class="settings-btn" onclick="requestPersistentStorage()">申请</button>
                 </div>
-                <button class="settings-btn" onclick="requestPersistentStorage()">申请</button>
               </div>
               <div class="data-management-divider"></div>
               <div class="data-management-item">
@@ -894,13 +1003,98 @@
                 <div class="data-management-info">
                   <div class="data-management-title">
                     <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
-                      <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M8 6h11M8 12h11M8 18h11M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    强制刷新资源
+                    查看更新日志
                   </div>
-                  <div class="data-management-desc">清理缓存并重新加载页面，用于解决更新不生效</div>
+                  <div class="data-management-desc">查看版本更新内容与功能变更记录</div>
                 </div>
-                <button class="settings-btn" onclick="forceReloadApp()">刷新</button>
+                <button class="settings-btn" onclick="openUpdateLogScreen()" type="button">查看</button>
+              </div>
+              <div class="data-management-divider"></div>
+              <div data-settings-platform="web">
+                <div class="data-management-item">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      强制刷新资源
+                    </div>
+                    <div class="data-management-desc">清理缓存并重新加载页面，用于解决网页部署后更新不生效</div>
+                  </div>
+                  <button class="settings-btn" onclick="forceReloadApp()">刷新</button>
+                </div>
+              </div>
+              <div data-settings-platform="apk" style="display: none;">
+                <div class="data-management-item">
+                  <div class="data-management-info">
+                    <div class="data-management-title">
+                      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+                        <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      APK 更新
+                    </div>
+                    <div class="data-management-desc" id="apkUpdateStatusDesc">正在读取当前版本与 APK Worker 更新服务...</div>
+                  </div>
+                </div>
+                <div class="settings-btn-group" style="margin-top: 12px;">
+                  <button class="settings-btn primary" onclick="checkApkUpdate()" type="button">检查更新</button>
+                </div>
+                <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 10px; line-height: 1.5;" id="apkUpdateHint">
+                  会通过 APK Worker 鉴权接口检查最新版；当前固定签名构建支持直接覆盖安装。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Update Log App Screen -->
+      <div class="app-screen" id="updateLogScreen">
+        <div class="app-content update-log-app-content">
+          <div class="update-log-page-shell">
+            <div class="update-log-header">
+              <div class="update-log-header-copy">
+                <div class="update-log-title">更新日志</div>
+                <div class="update-log-subtitle">Update History</div>
+              </div>
+              <button class="update-log-close-btn" onclick="closeUpdateLogScreen()" type="button" aria-label="关闭更新日志页面">
+                <svg viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="update-log-slider-shell" aria-live="polite">
+              <div class="update-log-track" id="updateLogTrack"></div>
+            </div>
+
+            <div class="update-log-footer">
+              <div class="update-log-controls">
+                <button class="update-log-nav-btn" id="updateLogPrevBtn" onclick="shiftUpdateLogPage(-1)" type="button" aria-label="查看上一条更新日志" disabled>
+                  <svg viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                  <span>Prev</span>
+                </button>
+                <div class="update-log-progress" id="updateLogProgress">-- / --</div>
+                <button class="update-log-nav-btn" id="updateLogNextBtn" onclick="shiftUpdateLogPage(1)" type="button" aria-label="查看下一条更新日志" disabled>
+                  <span>Next</span>
+                  <svg viewBox="0 0 24 24">
+                    <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="update-log-stage-shell">
+                <div class="update-log-stage" id="updateLogStage" aria-hidden="true">
+                  <div class="update-log-fence-layer" id="updateLogFenceLayer"></div>
+                  <div class="update-log-sheep-mover" id="updateLogSheepMover">
+                    <span class="update-log-sheep-actor solo" id="updateLogSheepActor">🐑</span>
+                  </div>
+                </div>
+                <div class="update-log-empty-copy" id="updateLogEmptyCopy" hidden>暂无版本记录，小羊巡逻中。</div>
               </div>
             </div>
           </div>
@@ -2266,6 +2460,843 @@
 
           </div>
 
+          <!-- Chat Groups Screen -->
+          <div class="chat-groups-screen" id="chatGroupsScreen" aria-hidden="true" data-theme="light">
+            <!-- 0. 背景雾效 -->
+            <div class="fog-layer" aria-hidden="true"></div>
+            <!-- 0.5 氛围歌词流 -->
+            <div class="ambient-lyrics-container" aria-hidden="true">
+              <div class="scrolling-text">
+                <span>ETHER AUDIO</span>
+                <span>NO SIGNAL</span>
+                <span>SYSTEM OFFLINE</span>
+                <span>DISCONNECTED</span>
+                <span>ETHER AUDIO</span>
+                <span>NO SIGNAL</span>
+              </div>
+              <div class="scrolling-text delay">
+                <span>LOST CONNECTION</span>
+                <span>RECONNECTING...</span>
+                <span>STATIC NOISE</span>
+                <span>VOID</span>
+                <span>LOST CONNECTION</span>
+                <span>RECONNECTING...</span>
+              </div>
+              <div class="scrolling-text">
+                <span>404</span>
+                <span>GHOST DATA</span>
+                <span>FREQUENCY</span>
+                <span>404</span>
+                <span>GHOST DATA</span>
+                <span>FREQUENCY</span>
+              </div>
+              <img class="ambient-lyrics-image" id="chatGroupsLyricsImage" alt="" />
+              <div class="ambient-lyrics-fog" id="chatGroupsLyricsFog" aria-hidden="true"></div>
+            </div>
+            <!-- 1. 侧边栏导航 -->
+            <div class="spine-nav">
+              <!-- 顶部操作区 -->
+              <div class="spine-top">
+                <button class="spine-action-btn" id="chatGroupsActionBack" type="button" title="返回">
+                  <svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20"></rect>
+                    <line x1="12" y1="2" x2="12" y2="22"></line>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                  </svg>
+                </button>
+                <button class="spine-action-btn discovery-btn" id="chatGroupsDiscoveryBtn" type="button" title="发现">
+                  <svg class="icon-svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <!-- 分割线：顶部 / 群组 -->
+              <div class="spine-sep spine-sep-top"></div>
+              <!-- 群组列表 -->
+              <div class="spine-groups" id="chatGroupsGroupTabs"></div>
+              <!-- 分割线：群组 / 底部 -->
+              <div class="spine-sep spine-sep-bottom"></div>
+              <!-- 底部操作区 -->
+              <div class="spine-bottom">
+                <button class="spine-action-btn" id="chatGroupsActionCreate" type="button" title="创建群组">
+                  <svg class="icon-svg" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+                <button class="spine-action-btn" id="chatGroupsActionSettings" type="button" title="设置">
+                  <svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l-.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button class="spine-action-btn" id="chatGroupsActionAdmin" type="button" title="管理员">
+                  <svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. 发现面板 (Slide Panel) -->
+            <div class="discovery-panel" id="chatGroupsDiscoveryPanel">
+              <div class="discovery-header">
+                <div class="discovery-title-row">
+                  <span class="discovery-title">FREQUENCY SCANNER</span>
+                  <button class="btn-close" id="chatGroupsDiscoveryCloseBtn" type="button" title="刷新" aria-label="刷新">
+                    <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+                      <path d="M20 4v6h-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="search-wrapper">
+                  <input type="text" id="chatGroupsSearchInput" placeholder="ENTER COORDINATES OR TAGS..." autocomplete="off">
+                  <div class="search-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="discovery-content" id="chatGroupsDiscoveryGrid">
+                <div id="chatGroupsDiscoveryEmpty" class="empty-state hidden">
+                  <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  <div class="empty-state-text">NO SIGNAL DETECTED</div>
+                </div>
+                <div id="chatGroupsDiscoveryLoading" class="loading-state hidden">
+                  <div class="signal-bars">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                  </div>
+                  <div class="loading-text">SCANNING FREQUENCIES...</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. 主内容区 -->
+            <div class="dossier-view">
+              <div id="chatGroupsContent">
+                <div class="dossier-header">
+                  <div class="header-top">
+                    <span class="group-title" id="chatGroupsTitle"></span>
+                  </div>
+                  <div class="group-meta-row">
+                    <span class="group-id" id="chatGroupsId"></span>
+                    <div class="tags-row" id="chatGroupsTags"></div>
+                  </div>
+                </div>
+
+                <div class="directory-container" id="chatGroupsChannelList"></div>
+              </div>
+            </div>
+
+            <!-- 4. 频道聊天层 (Chat Overlay) -->
+            <div class="chat-overlay" id="chatGroupsOverlay">
+              <div class="chat-header">
+                <span class="chat-title" id="chatGroupsChatTitle"># general</span>
+                <button class="close-btn" id="chatGroupsCloseBtn" type="button">×</button>
+              </div>
+
+              <div class="chat-feed" id="chatGroupsChatFeed"></div>
+
+              <div class="chat-input-box">
+                <div class="chat-reply-preview" id="chatGroupsReplyPreview" aria-hidden="true">
+                  <div class="reply-preview-head">
+                    <span class="reply-preview-label">:: REPLY</span>
+                    <button class="close-btn reply-preview-close" id="chatGroupsReplyCloseBtn" type="button">×</button>
+                  </div>
+                  <div class="reply-preview-meta">
+                    <span class="reply-preview-author" id="chatGroupsReplyAuthor"></span>
+                  </div>
+                  <div class="reply-preview-text" id="chatGroupsReplyText"></div>
+                </div>
+
+                <div class="chat-input-row">
+                  <div class="chat-attach-wrap">
+                    <button class="chat-groups-attach-btn" id="chatGroupsAttachBtn" type="button" aria-expanded="false" aria-label="Attachments">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 12l6-6a3 3 0 1 1 4 4l-7 7a5 5 0 1 1-7-7l8-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                      </svg>
+                    </button>
+                    <div class="chat-groups-attach-menu" id="chatGroupsAttachMenu" aria-hidden="true">
+                      <button class="chat-groups-attach-item" id="chatGroupsAttachImageBtn" type="button" title="Image">
+                        <span class="attach-icon">▣</span>
+                        <span class="attach-label">IMAGE</span>
+                      </button>
+                      <button class="chat-groups-attach-item" id="chatGroupsAttachVoiceBtn" type="button" title="Voice">
+                        <span class="attach-icon">∿</span>
+                        <span class="attach-label">VOICE</span>
+                      </button>
+                      <button class="chat-groups-attach-item" id="chatGroupsAttachStickerBtn" type="button" title="Sticker">
+                        <span class="attach-icon">✦</span>
+                        <span class="attach-label">STICKER</span>
+                      </button>
+                      <button class="chat-groups-attach-item" id="chatGroupsAttachRegenerateBtn" type="button" title="Regenerate">
+                        <span class="attach-icon">↺</span>
+                        <span class="attach-label">重回</span>
+                      </button>
+                    </div>
+                    <input type="file" id="chatGroupsImageInput" accept="image/*" style="display:none;">
+                  </div>
+
+                  <input type="text" class="raw-input" placeholder="Whisper something..." id="chatGroupsMsgInput">
+                  <span class="send-icon" id="chatGroupsSendBtn">➤</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4.5 频道聊天管理层 (Channel Manage Drawer) -->
+            <div class="chat-groups-channel-layer" id="chatGroupsChannelLayer" aria-hidden="true">
+              <div class="chat-groups-channel-backdrop" id="chatGroupsChannelBackdrop" aria-hidden="true"></div>
+              <div class="chat-groups-channel-panel" id="chatGroupsChannelPanel" role="dialog" aria-modal="true" aria-labelledby="chatGroupsChannelTitle">
+                <div class="chat-groups-channel-header">
+                  <div class="chat-groups-channel-title">
+                    <div class="chat-groups-channel-title-main" id="chatGroupsChannelTitle">频道管理</div>
+                    <div class="chat-groups-channel-title-sub">:: CHANNEL CHAT CONTROL</div>
+                  </div>
+                  <button class="btn-close" id="chatGroupsChannelCloseBtn" type="button" title="关闭" aria-label="关闭">
+                    <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="chat-groups-channel-tabs" role="tablist" aria-label="频道管理标签">
+                  <button class="chat-groups-channel-tab is-active" type="button" role="tab" aria-selected="true">CHAT</button>
+                  <button class="chat-groups-channel-tab" type="button" role="tab" aria-selected="false" disabled>NOTES</button>
+                  <button class="chat-groups-channel-tab" type="button" role="tab" aria-selected="false" disabled>ONLINE</button>
+                </div>
+
+                <div class="chat-groups-channel-body hide-scrollbar">
+                  <div class="chat-groups-channel-card">
+                    <div class="chat-groups-channel-card-title">:: CURRENT CHANNEL</div>
+                    <div class="chat-groups-channel-summary">
+                      <div class="chat-groups-channel-summary-main">
+                        <div class="chat-groups-channel-name" id="chatGroupsChannelNamePreview"># general</div>
+                        <div class="chat-groups-channel-meta">
+                          <span class="chat-groups-channel-chip" id="chatGroupsChannelCategoryPreview">CORE</span>
+                          <span class="chat-groups-channel-chip" id="chatGroupsChannelStatusPreview">ACTIVE</span>
+                        </div>
+                      </div>
+                      <div class="chat-groups-channel-summary-side">
+                        <div class="chat-groups-channel-stat">
+                          <span class="chat-groups-channel-stat-label">MEMBERS</span>
+                          <span class="chat-groups-channel-stat-value" id="chatGroupsChannelMembersPreview">--</span>
+                        </div>
+                        <div class="chat-groups-channel-stat">
+                          <span class="chat-groups-channel-stat-label">ONLINE</span>
+                          <span class="chat-groups-channel-stat-value" id="chatGroupsChannelOnlinePreview">--</span>
+                        </div>
+                        <div class="chat-groups-channel-stat">
+                          <span class="chat-groups-channel-stat-label">ACTIVITY</span>
+                          <span class="chat-groups-channel-stat-value" id="chatGroupsChannelActivityPreview">--</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="chat-groups-channel-card">
+                    <div class="chat-groups-channel-card-title">:: CHANNEL NOTE</div>
+                    <div class="chat-groups-channel-note" id="chatGroupsChannelNotePreview">No note yet.</div>
+                  </div>
+
+                  <div class="chat-groups-channel-card">
+                    <div class="chat-groups-channel-card-title">:: HISTORY WINDOW</div>
+                    <div class="chat-groups-channel-history">
+                      <div class="chat-groups-channel-history-row">
+                        <div class="chat-groups-channel-history-label">READ LAST</div>
+                        <div class="chat-groups-channel-history-value" id="chatGroupsHistoryCountPreview">50</div>
+                      </div>
+                      <div class="chat-groups-channel-history-chips">
+                        <button class="chat-groups-channel-chip-btn is-active" type="button">20</button>
+                        <button class="chat-groups-channel-chip-btn" type="button">50</button>
+                        <button class="chat-groups-channel-chip-btn" type="button">100</button>
+                        <button class="chat-groups-channel-chip-btn" type="button">200</button>
+                        <button class="chat-groups-channel-chip-btn" type="button">ALL</button>
+                      </div>
+                      <div class="chat-groups-channel-history-range">
+                        <input class="chat-groups-channel-range" type="range" min="10" max="200" step="10" value="50">
+                        <span class="chat-groups-channel-range-value">50</span>
+                      </div>
+                      <div class="chat-groups-channel-history-hint">Read recent messages for context; larger values may slow loading.</div>
+                    </div>
+                  </div>
+
+                  <div class="chat-groups-channel-card">
+                    <div class="chat-groups-channel-card-title">:: EXTRA SIGNALS</div>
+                    <div class="chat-groups-channel-info-grid">
+                      <div class="chat-groups-channel-info">
+                        <div class="chat-groups-channel-info-label">LAST MESSAGE</div>
+                        <div class="chat-groups-channel-info-value" id="chatGroupsChannelLastMessagePreview">--</div>
+                      </div>
+                      <div class="chat-groups-channel-info">
+                        <div class="chat-groups-channel-info-label">SLOW MODE</div>
+                        <div class="chat-groups-channel-info-value" id="chatGroupsChannelSlowModePreview">OFF</div>
+                      </div>
+                      <div class="chat-groups-channel-info">
+                        <div class="chat-groups-channel-info-label">MEDIA</div>
+                        <div class="chat-groups-channel-info-value" id="chatGroupsChannelMediaPreview">ON</div>
+                      </div>
+                      <div class="chat-groups-channel-info">
+                        <div class="chat-groups-channel-info-label">INDEX</div>
+                        <div class="chat-groups-channel-info-value" id="chatGroupsChannelIndexPreview">01</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. 预览层 (Preview Layer) -->
+            <div class="preview-layer" id="chatGroupsPreviewLayer" aria-hidden="true">
+              <div class="preview-card">
+                <div class="preview-body">
+                  <div class="preview-image-header" id="chatGroupsPreviewHero">
+                    <button class="btn-close preview-close" id="chatGroupsPreviewCloseBtn" type="button" title="关闭" aria-label="关闭">
+                      <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+
+                    <h2 class="text-shadow-hard" id="chatGroupsPreviewTitle">Group Name</h2>
+                    <div class="preview-creator text-shadow-hard">CREATED BY <span id="chatGroupsPreviewCreator">SYSTEM</span></div>
+
+                    <div class="preview-tags" id="chatGroupsPreviewTags"></div>
+
+                    <div class="stats-grid preview-stats">
+                      <div class="stat-item">
+                        <span class="stat-val text-shadow-hard" id="chatGroupsPreviewMembers">--</span>
+                        <span class="stat-label text-shadow-hard">MEMBERS</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-val text-shadow-hard" id="chatGroupsPreviewOnline">--</span>
+                        <span class="stat-label text-shadow-hard">ONLINE</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-val text-shadow-hard" id="chatGroupsPreviewActivity">--</span>
+                        <span class="stat-label text-shadow-hard">ACTIVITY</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="preview-section">
+                    <div class="section-title">PROTOCOL REQUIREMENTS</div>
+                    <div class="protocol-list" id="chatGroupsPreviewReqs"></div>
+                  </div>
+
+                  <div class="preview-section preview-section-last">
+                    <div class="section-title">SIGNAL INTERCEPT [LIVE]</div>
+                    <div class="chat-preview-box" id="chatGroupsPreviewChatPreview"></div>
+                  </div>
+                </div>
+
+                <div class="modal-actions">
+                  <button class="btn-full" id="chatGroupsObserveBtn" type="button">OBSERVE</button>
+                  <button class="btn-full primary" id="chatGroupsConnectBtn" type="button">CONNECT</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. 申请连接层 -->
+            <div class="app-layer" id="chatGroupsAppLayer">
+              <div class="app-card" id="chatGroupsAppCard">
+                <div class="app-header">:: CONNECTION REQUEST</div>
+                <div class="app-body">
+                  <div class="req-recap-box">
+                    <span class="req-recap-title">REMINDER: ENTRY PROTOCOLS</span>
+                    <ul class="req-list-small" id="chatGroupsAppReqs"></ul>
+                  </div>
+
+                  <div class="input-section">
+                    <label>STATE YOUR INTENT</label>
+                    <textarea class="app-textarea" id="chatGroupsAppReason" placeholder="Why do you seek connection?"></textarea>
+                  </div>
+                </div>
+                <div class="app-footer">
+                  <button class="action-btn" id="chatGroupsAppAbortBtn" type="button">ABORT</button>
+                  <button class="action-btn primary" id="chatGroupsAppSubmitBtn" type="button">TRANSMIT</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. 群组设置层 -->
+            <div class="chat-groups-settings-layer" id="chatGroupsSettingsLayer" aria-hidden="true">
+              <div class="chat-groups-settings-backdrop" id="chatGroupsSettingsBackdrop" aria-hidden="true"></div>
+              <div class="chat-groups-settings-drawer" id="chatGroupsSettingsDrawer" role="dialog" aria-modal="true" aria-labelledby="chatGroupsSettingsTitle">
+                <div class="chat-groups-settings-header">
+                  <div class="chat-groups-settings-title">
+                    <div class="chat-groups-settings-title-main" id="chatGroupsSettingsTitle">群组设置</div>
+                    <div class="chat-groups-settings-title-sub">:: GROUPS SETTINGS</div>
+                  </div>
+                  <button class="btn-close" id="chatGroupsSettingsCloseBtn" type="button" title="关闭" aria-label="关闭">
+                    <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="chat-groups-settings-content hide-scrollbar">
+                  <div class="chat-groups-settings-card">
+                    <div class="chat-groups-settings-card-title">:: THEME</div>
+                    <button class="chat-groups-settings-row disabled" type="button" disabled>
+                      <div class="chat-groups-settings-row-left">
+                        <div class="chat-groups-settings-row-label">切换主题</div>
+                        <div class="chat-groups-settings-row-desc">当前仅支持默认主题</div>
+                      </div>
+                      <div class="chat-groups-settings-row-right">Default</div>
+                    </button>
+                  </div>
+
+                  <div class="chat-groups-settings-card">
+                    <div class="chat-groups-settings-card-title">:: LYRICS</div>
+                    <div class="chat-groups-settings-toggle-row">
+                      <div class="chat-groups-settings-toggle-left">
+                        <div class="chat-groups-settings-toggle-label">氛围歌词</div>
+                        <div class="chat-groups-settings-toggle-desc">底部歌词流与雾面效果</div>
+                      </div>
+                      <div class="chat-groups-settings-mode" id="chatGroupsLyricsEnableSwitch" role="group" aria-label="歌词显示开关" data-mode="on">
+                        <button class="chat-groups-settings-mode-btn is-active" id="chatGroupsLyricsEnableOnBtn" type="button" data-mode="on">ON</button>
+                        <button class="chat-groups-settings-mode-btn" id="chatGroupsLyricsEnableOffBtn" type="button" data-mode="off">OFF</button>
+                        <span class="chat-groups-settings-mode-indicator" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="chat-groups-settings-toggle-row">
+                      <div class="chat-groups-settings-toggle-left">
+                        <div class="chat-groups-settings-toggle-label">显示模式</div>
+                        <div class="chat-groups-settings-toggle-desc">文字 / 图片</div>
+                      </div>
+                      <div class="chat-groups-settings-mode" id="chatGroupsLyricsModeSwitch" role="group" aria-label="歌词显示模式" data-mode="text">
+                        <button class="chat-groups-settings-mode-btn is-active" id="chatGroupsLyricsModeTextBtn" type="button" data-mode="text">TEXT</button>
+                        <button class="chat-groups-settings-mode-btn" id="chatGroupsLyricsModeImageBtn" type="button" data-mode="image">IMAGE</button>
+                        <span class="chat-groups-settings-mode-indicator" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="chat-groups-settings-field" id="chatGroupsLyricsTextField">
+                      <div class="chat-groups-settings-label">歌词文本</div>
+                      <textarea class="chat-groups-settings-textarea" id="chatGroupsLyricsTextInput" rows="3" maxlength="400" placeholder="多行 = 多条滚动字幕"></textarea>
+                      <div class="chat-groups-settings-hint">每行会自动重复滚动</div>
+                    </div>
+
+                    <div class="chat-groups-settings-field">
+                      <div class="chat-groups-settings-label">文字大小</div>
+                      <div class="chat-groups-settings-range">
+                        <input class="chat-groups-settings-range-input" id="chatGroupsLyricsSizeInput" type="range" min="4" max="18" step="0.5">
+                        <span class="chat-groups-settings-range-value" id="chatGroupsLyricsSizeValue">10vh</span>
+                      </div>
+                    </div>
+
+                    <div class="chat-groups-settings-field">
+                      <div class="chat-groups-settings-label">雾面模糊</div>
+                      <div class="chat-groups-settings-range">
+                        <input class="chat-groups-settings-range-input" id="chatGroupsLyricsBlurInput" type="range" min="0" max="16" step="1">
+                        <span class="chat-groups-settings-range-value" id="chatGroupsLyricsBlurValue">8px</span>
+                      </div>
+                    </div>
+
+                    <div class="chat-groups-settings-field" id="chatGroupsLyricsImageField">
+                      <div class="chat-groups-settings-label">图片链接</div>
+                      <input class="chat-groups-settings-input" id="chatGroupsLyricsImageUrlInput" type="text" placeholder="https://... 或 data:image/...">
+                      <div class="chat-groups-settings-hint">支持动图与外链 / 本地上传</div>
+                      <div class="chat-groups-settings-media compact">
+                        <div class="chat-groups-settings-media-line">
+                          <div class="chat-groups-settings-media-preview image" id="chatGroupsLyricsImagePreview" aria-hidden="true"></div>
+                          <div class="chat-groups-settings-media-meta">
+                            <div class="chat-groups-settings-media-title">歌词图像</div>
+                            <div class="chat-groups-settings-media-sub">用于替换底部歌词</div>
+                          </div>
+                        </div>
+                        <div class="chat-groups-settings-media-actions">
+                          <button class="chat-groups-settings-mini-btn" id="chatGroupsLyricsImagePickBtn" type="button">上传</button>
+                          <button class="chat-groups-settings-mini-btn danger" id="chatGroupsLyricsImageClearBtn" type="button" disabled>清除</button>
+                        </div>
+                        <input type="file" id="chatGroupsLyricsImageFile" accept="image/*" style="display:none">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="chat-groups-settings-card">
+                    <div class="chat-groups-settings-card-title">:: ACCOUNT</div>
+
+                    <div class="chat-groups-settings-media">
+                      <div class="chat-groups-settings-media-line">
+                        <div class="chat-groups-settings-media-preview avatar" id="chatGroupsAccountAvatarPreview" aria-hidden="true"></div>
+                        <div class="chat-groups-settings-media-meta">
+                          <div class="chat-groups-settings-media-title">账户头像</div>
+                          <div class="chat-groups-settings-media-sub">同步动态社交资料</div>
+                        </div>
+                      </div>
+                      <div class="chat-groups-settings-media-actions">
+                        <button class="chat-groups-settings-mini-btn" id="chatGroupsAccountAvatarPickBtn" type="button">更换</button>
+                        <button class="chat-groups-settings-mini-btn danger" id="chatGroupsAccountAvatarClearBtn" type="button" disabled>清除</button>
+                      </div>
+                      <input type="file" id="chatGroupsAccountAvatarFile" accept="image/*" style="display:none">
+                    </div>
+
+                    <div class="chat-groups-settings-field">
+                      <div class="chat-groups-settings-label">账户用户名</div>
+                      <input class="chat-groups-settings-input" id="chatGroupsAccountNameInput" type="text" maxlength="24" placeholder="留空 = 同步用户资料用户名">
+                    </div>
+
+                    <div class="chat-groups-settings-field">
+                      <div class="chat-groups-settings-label">账户句柄</div>
+                      <input class="chat-groups-settings-input mono" id="chatGroupsAccountHandleInput" type="text" maxlength="32" placeholder="@handle">
+                      <div class="chat-groups-settings-hint">句柄用于群组内标识，不影响用户资料页</div>
+                    </div>
+
+                    <div class="chat-groups-settings-field">
+                      <div class="chat-groups-settings-label">账户签名</div>
+                      <textarea class="chat-groups-settings-textarea" id="chatGroupsAccountSignatureInput" rows="3" maxlength="160" placeholder="留空 = 同步用户资料简介"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="chat-groups-settings-card">
+                    <div class="chat-groups-settings-card-title">:: IDENTITY</div>
+
+                    <div class="chat-groups-settings-group-head">
+                      <div class="chat-groups-settings-group-chip" id="chatGroupsIdentityGroupChip"></div>
+                      <div class="chat-groups-settings-group-meta">
+                        <div class="chat-groups-settings-group-name" id="chatGroupsIdentityGroupName">Archive 01</div>
+                        <div class="chat-groups-settings-group-sub" id="chatGroupsIdentityGroupSub">当前群组昵称/头像可单独设置</div>
+                      </div>
+                    </div>
+
+                    <div class="chat-groups-settings-toggle-row">
+                      <div class="chat-groups-settings-toggle-left">
+                        <div class="chat-groups-settings-toggle-label">使用默认账户资料</div>
+                        <div class="chat-groups-settings-toggle-desc">开启后，本群组不使用单独昵称</div>
+                      </div>
+                      <div class="chat-groups-settings-mode" id="chatGroupsIdentityModeSwitch" role="group" aria-label="群组身份模式" data-mode="default">
+                        <button class="chat-groups-settings-mode-btn is-active" id="chatGroupsIdentityModeDefaultBtn" type="button" data-mode="default">DEFAULT</button>
+                        <button class="chat-groups-settings-mode-btn" id="chatGroupsIdentityModeCustomBtn" type="button" data-mode="custom">CUSTOM</button>
+                        <span class="chat-groups-settings-mode-indicator" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="chat-groups-settings-media compact" id="chatGroupsIdentityAvatarBlock">
+                      <div class="chat-groups-settings-media-line">
+                        <div class="chat-groups-settings-media-preview avatar" id="chatGroupsIdentityAvatarPreview" aria-hidden="true"></div>
+                        <div class="chat-groups-settings-media-meta">
+                          <div class="chat-groups-settings-media-title">群组头像</div>
+                          <div class="chat-groups-settings-media-sub">仅本群组显示</div>
+                        </div>
+                      </div>
+                      <div class="chat-groups-settings-media-actions">
+                        <button class="chat-groups-settings-mini-btn" id="chatGroupsIdentityAvatarPickBtn" type="button">更换</button>
+                        <button class="chat-groups-settings-mini-btn danger" id="chatGroupsIdentityAvatarClearBtn" type="button" disabled>清除</button>
+                      </div>
+                      <input type="file" id="chatGroupsIdentityAvatarFile" accept="image/*" style="display:none">
+                    </div>
+
+                    <div class="chat-groups-settings-field" id="chatGroupsIdentityNameField">
+                      <div class="chat-groups-settings-label">群组昵称</div>
+                      <input class="chat-groups-settings-input" id="chatGroupsIdentityNameInput" type="text" maxlength="24" placeholder="留空 = 使用默认用户名">
+                    </div>
+
+                    <div class="chat-groups-settings-field" id="chatGroupsIdentitySignatureField">
+                      <div class="chat-groups-settings-label">群组签名</div>
+                      <textarea class="chat-groups-settings-textarea" id="chatGroupsIdentitySignatureInput" rows="2" maxlength="120" placeholder="留空 = 使用默认签名"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="chat-groups-settings-footer">
+                    <button class="chat-groups-settings-footer-btn" id="chatGroupsSettingsCancelBtn" type="button">取消</button>
+                    <button class="chat-groups-settings-footer-btn primary" id="chatGroupsSettingsSaveBtn" type="button">保存</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Groups Admin Layer -->
+            <div class="chat-groups-admin-layer" id="chatGroupsAdminLayer" aria-hidden="true">
+              <div class="chat-groups-admin-backdrop" id="chatGroupsAdminBackdrop" aria-hidden="true"></div>
+              <div class="chat-groups-admin-panel" id="chatGroupsAdminPanel" role="dialog" aria-modal="true" aria-labelledby="chatGroupsAdminTitle">
+                <div class="chat-groups-admin-header">
+                  <div class="chat-groups-admin-title-row">
+                  <div class="chat-groups-admin-title">
+                    <div class="chat-groups-admin-title-main" id="chatGroupsAdminTitle">管理员工具</div>
+                    <div class="chat-groups-admin-title-sub">:: ADMIN TOOLS</div>
+                  </div>
+                  <button class="btn-close" id="chatGroupsAdminCloseBtn" type="button" title="关闭" aria-label="关闭">
+                    <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                  <div class="chat-groups-admin-meta">
+                    <span class="chat-groups-admin-chip" id="chatGroupsAdminGroupId">DSN</span>
+                    <span class="chat-groups-admin-group" id="chatGroupsAdminGroupName">Design Hub</span>
+                  </div>
+                </div>
+
+                <div class="chat-groups-admin-content hide-scrollbar" id="chatGroupsAdminContent">
+                  <div class="chat-groups-admin-section">
+                    <div class="chat-groups-admin-section-title">:: ANNOUNCEMENTS</div>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="announce">
+                      <div class="chat-groups-admin-tool-title">发布公告</div>
+                      <div class="chat-groups-admin-tool-desc">向公告频道推送一则系统消息</div>
+                    </button>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="pin">
+                      <div class="chat-groups-admin-tool-title">置顶消息</div>
+                      <div class="chat-groups-admin-tool-desc">将选中的公告固定在频道顶部</div>
+                    </button>
+                  </div>
+
+                  <div class="chat-groups-admin-section">
+                    <div class="chat-groups-admin-section-title">:: MEMBER CONTROL</div>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="mute">
+                      <div class="chat-groups-admin-tool-title">禁言成员</div>
+                      <div class="chat-groups-admin-tool-desc">临时限制指定成员的发言权限</div>
+                    </button>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="kick">
+                      <div class="chat-groups-admin-tool-title">移出成员</div>
+                      <div class="chat-groups-admin-tool-desc">将成员从群组中移除</div>
+                    </button>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="invite">
+                      <div class="chat-groups-admin-tool-title">邀请成员</div>
+                      <div class="chat-groups-admin-tool-desc">生成邀请信息，授权成员加入</div>
+                    </button>
+                  </div>
+
+                  <div class="chat-groups-admin-section">
+                    <div class="chat-groups-admin-section-title">:: ROLE ACCESS</div>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="grant-role">
+                      <div class="chat-groups-admin-tool-title">授予身份组</div>
+                      <div class="chat-groups-admin-tool-desc">为成员添加可见频道权限</div>
+                    </button>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="revoke-role">
+                      <div class="chat-groups-admin-tool-title">撤销身份组</div>
+                      <div class="chat-groups-admin-tool-desc">回收成员的频道访问权限</div>
+                    </button>
+                    <button class="chat-groups-admin-tool creator-only" type="button" data-admin-action="manage-roles">
+                      <div class="chat-groups-admin-tool-title">管理身份组</div>
+                      <div class="chat-groups-admin-tool-desc">编辑身份组与频道权限规则</div>
+                    </button>
+                  </div>
+
+                  <div class="chat-groups-admin-section creator-only">
+                    <div class="chat-groups-admin-section-title">:: CHANNEL MANAGEMENT</div>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="channel-manage-all">
+                      <div class="chat-groups-admin-tool-title">频道管理</div>
+                      <div class="chat-groups-admin-tool-desc">分类增删 / 可见身份组 / 频道增删 / 频道权限 / 频道备注</div>
+                    </button>
+                  </div>
+
+                  <div class="chat-groups-admin-section creator-only">
+                    <div class="chat-groups-admin-section-title">:: GROUP CONTROL</div>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="group-manage-all">
+                      <div class="chat-groups-admin-tool-title">群组管理</div>
+                      <div class="chat-groups-admin-tool-desc">开放/邀请/关闭入群模式 + 入群要求</div>
+                    </button>
+                  </div>
+
+                  <div class="chat-groups-admin-section">
+                    <div class="chat-groups-admin-section-title">:: MONITORING</div>
+                    <button class="chat-groups-admin-tool" type="button" data-admin-action="audit">
+                      <div class="chat-groups-admin-tool-title">查看审计记录</div>
+                      <div class="chat-groups-admin-tool-desc">浏览管理操作与频道活动摘要</div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Action Modal -->
+            <div class="chat-groups-admin-action-layer" id="chatGroupsAdminActionLayer" aria-hidden="true">
+              <div class="chat-groups-admin-action-backdrop" id="chatGroupsAdminActionBackdrop" aria-hidden="true"></div>
+              <div class="chat-groups-admin-action-card" id="chatGroupsAdminActionCard" role="dialog" aria-modal="true" aria-labelledby="chatGroupsAdminActionTitle">
+                <div class="chat-groups-admin-action-header">
+                  <div class="chat-groups-admin-action-title">
+                    <div class="chat-groups-admin-action-title-main" id="chatGroupsAdminActionTitle">管理员工具</div>
+                    <div class="chat-groups-admin-action-title-sub" id="chatGroupsAdminActionSub">:: ACTION PANEL</div>
+                  </div>
+                  <button class="close-btn" id="chatGroupsAdminActionCloseBtn" type="button" title="关闭">×</button>
+                </div>
+                <div class="chat-groups-admin-action-body hide-scrollbar" id="chatGroupsAdminActionBody"></div>
+                <div class="chat-groups-admin-action-footer">
+                  <button class="chat-groups-admin-action-btn" id="chatGroupsAdminActionCancelBtn" type="button">取消</button>
+                  <button class="chat-groups-admin-action-btn primary" id="chatGroupsAdminActionSubmitBtn" type="button">应用</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Groups Create Layer -->
+            <div class="chat-groups-create-layer" id="chatGroupsCreateLayer" aria-hidden="true">
+              <div class="chat-groups-create-backdrop" id="chatGroupsCreateBackdrop" aria-hidden="true"></div>
+              <div class="chat-groups-create-card" id="chatGroupsCreateCard" role="dialog" aria-modal="true" aria-labelledby="chatGroupsCreateTitle">
+                <div class="chat-groups-create-header">
+                  <div class="chat-groups-create-title">
+                    <div class="chat-groups-create-title-main" id="chatGroupsCreateTitle">创建群组</div>
+                    <div class="chat-groups-create-title-sub">:: CREATE GROUP</div>
+                  </div>
+                  <button class="btn-close" id="chatGroupsCreateCloseBtn" type="button" title="关闭" aria-label="关闭">
+                    <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div class="chat-groups-create-body hide-scrollbar">
+                  <div class="chat-groups-create-media">
+                    <div class="chat-groups-create-media-line">
+                      <div class="chat-groups-create-avatar" id="chatGroupsCreateAvatarPreview" aria-hidden="true"></div>
+                      <div class="chat-groups-create-media-meta">
+                        <div class="chat-groups-create-media-title">群组头像</div>
+                        <div class="chat-groups-create-media-sub">上传一张用于群组识别的图像</div>
+                      </div>
+                    </div>
+                    <div class="chat-groups-create-media-actions">
+                      <button class="chat-groups-create-mini-btn" id="chatGroupsCreateAvatarPickBtn" type="button">上传</button>
+                      <button class="chat-groups-create-mini-btn danger" id="chatGroupsCreateAvatarClearBtn" type="button" disabled>清除</button>
+                    </div>
+                    <input type="file" id="chatGroupsCreateAvatarFile" accept="image/*" style="display:none">
+                  </div>
+
+                  <div class="chat-groups-create-field">
+                    <div class="chat-groups-create-label">群组名称</div>
+                    <input class="chat-groups-create-input" id="chatGroupsCreateNameInput" type="text" maxlength="32" placeholder="输入新的群组名称">
+                  </div>
+
+                  <div class="chat-groups-create-field">
+                    <div class="chat-groups-create-label">群组标签</div>
+                    <input class="chat-groups-create-input mono" id="chatGroupsCreateTagsInput" type="text" maxlength="80" placeholder="使用逗号分隔标签">
+                    <div class="chat-groups-create-hint">例如：design, archive, studio</div>
+                  </div>
+                </div>
+
+                <div class="chat-groups-create-footer">
+                  <button class="chat-groups-create-btn" id="chatGroupsCreateCancelBtn" type="button">取消</button>
+                  <button class="chat-groups-create-btn primary" id="chatGroupsCreateSubmitBtn" type="button">创建</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. Modal: User Profile (Layer 4 - 最终修复版) -->
+            <div id="modal-user-profile" class="modal-overlay" onclick="closeChatGroupsUserProfileModal(event)">
+              <div class="profile-sheet" onclick="event.stopPropagation()">
+
+                <!-- 顶部 Banner -->
+                <div class="profile-banner" id="profile-banner-bg">
+                  <div class="profile-drag-handle"></div>
+                  <div class="profile-top-actions">
+                    <button class="profile-top-btn" type="button">
+                      <svg class="icon-svg" viewBox="0 0 24 24" style="width:16px; height:16px; stroke:none; fill:currentColor;">
+                        <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                      </svg>
+                    </button>
+                    <button class="profile-top-btn" type="button" onclick="closeChatGroupsUserProfileModal(event)">
+                      <svg class="icon-svg" viewBox="0 0 24 24" style="width:16px; height:16px; stroke:none; fill:currentColor;">
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <circle cx="19" cy="12" r="2"></circle>
+                        <circle cx="5" cy="12" r="2"></circle>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 头像与状态 -->
+                <div class="profile-avatar-wrapper">
+                  <img src="" alt="avatar" class="profile-avatar-img" id="profile-dynamic-avatar">
+                  <div class="profile-status-icon">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- 结构化思考气泡 (Thought Bubble) -->
+                <div class="profile-thought-bubble">
+                  <div class="bubble-small"></div>
+                  <div class="bubble-medium"></div>
+                  <div class="bubble-capsule" id="profile-dynamic-status-bubble">我們可以是彼此不可或缺的存在嗎</div>
+                </div>
+
+                <div class="profile-body">
+                  <!-- 名字区域 -->
+                  <div class="profile-name-area">
+                    <h1>夜兔被抓走了</h1>
+                    <p>xiaoye05005 · 夜</p>
+                    <div class="profile-mutual">
+                      <div class="mutual-avatars">
+                        <div></div><div></div><div></div>
+                      </div>
+                      <span>4位共同好友 · 4个共同服务器</span>
+                    </div>
+                  </div>
+
+                  <!-- 动作按钮 -->
+                  <div class="profile-action-row">
+                    <button class="profile-action-btn" type="button">
+                      <div class="action-circle">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
+                        </svg>
+                      </div>
+                      <span>消息</span>
+                    </button>
+                    <button class="profile-action-btn" type="button">
+                      <div class="action-circle">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"></path>
+                        </svg>
+                      </div>
+                      <span>语音通话</span>
+                    </button>
+                    <button class="profile-action-btn" type="button">
+                      <div class="action-circle">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"></path>
+                        </svg>
+                      </div>
+                      <span>视频通话</span>
+                    </button>
+                  </div>
+
+                  <!-- 信息卡片：自我介绍 + 加入时间 -->
+                  <div class="profile-info-card">
+          <div class="profile-info-title">自我介绍</div>
+          <div class="profile-info-content" style="margin-bottom: 24px;">
+              <span id="profile-dynamic-signature">Looking for signals...</span>
+          </div>
+
+                    <div class="profile-info-title">成员加入时间</div>
+                    <div class="profile-info-content" style="font-size: 13px;">
+                      <svg class="icon-svg" viewBox="0 0 24 24" style="width:16px; height:16px; stroke:none; fill:currentColor;">
+                        <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95.0.02.01.04.03.05 1.8 1.32 3.53 2.12 5.24 2.65.03.01.06 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.09.22.17.33.26.03.03.03.09-.01.11-.52.31-1.07.56-1.64.78-.04.01-.05.06-.04.09.32.61.68 1.19 1.07 1.74.01.02.04.03.07.02 1.71-.53 3.44-1.33 5.24-2.65.02-.01.03-.03.03-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12z"></path>
+                      </svg>
+                      <span id="profile-dynamic-registered-at">2025年11月16日</span>
+                      <span style="margin: 0 4px; color: var(--text-dim);">·</span>
+                      <span class="profile-community-icon" id="profile-dynamic-community-icon" aria-hidden="true"></span>
+                      <span id="profile-dynamic-community-joined-at">2025年11月16日</span>
+                    </div>
+                  </div>
+
+                  <!-- 信息卡片：身份组 -->
+                  <div class="profile-info-card">
+                    <div class="profile-info-title">身份组</div>
+                    <div class="role-tags-container" id="profile-dynamic-roles" aria-label="roles"></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
           <!-- Chat Add Contact Overlay -->
           <div class="chat-add-contact-overlay" id="chatAddContactOverlay" onclick="closeChatAddContactFlow(event)">
             <div class="chat-add-contact-deco" aria-hidden="true">
@@ -2836,6 +3867,15 @@
               </div>
               <div class="chat-menu-item-label" id="chatReverseModeLabel">反向</div>
             </div>
+            <div class="chat-menu-item chat-menu-item-chatbox" onclick="openChatboxManager()">
+              <div class="chat-menu-item-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 6.5a2.5 2.5 0 0 1 2.5-2.5h6A2.5 2.5 0 0 1 15 6.5v3A2.5 2.5 0 0 1 12.5 12H9l-3 2v-2.5A2.5 2.5 0 0 1 4 9.5z" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M11 14.5A2.5 2.5 0 0 1 13.5 12h4A2.5 2.5 0 0 1 20 14.5v2A2.5 2.5 0 0 1 17.5 19H16l-2.5 1.8V19A2.5 2.5 0 0 1 11 16.5z" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <div class="chat-menu-item-label">聊天框</div>
+            </div>
             <div class="chat-menu-item" onclick="openThemeEditor()">
               <div class="chat-menu-item-icon">
                 <svg viewBox="0 0 24 24">
@@ -2856,6 +3896,74 @@
                 </svg>
               </div>
               <div class="chat-menu-item-label">重回</div>
+            </div>
+          </div>
+
+          <div class="chatbox-manager-overlay" id="chatboxManagerOverlay" onclick="if (event.target === this) closeChatboxManager()">
+            <div class="chatbox-manager-sheet" onclick="event.stopPropagation()">
+              <div class="chatbox-manager-handle"></div>
+              <div class="chatbox-manager-header">
+                <div class="chatbox-manager-title-wrap">
+                  <div class="chatbox-manager-title">聊天框管理</div>
+                  <div class="chatbox-manager-subtitle">当前聊天框搜索 + 多开管理</div>
+                </div>
+                <button class="chatbox-manager-close" type="button" onclick="closeChatboxManager()" aria-label="关闭聊天框管理">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+              </div>
+              <div class="chatbox-manager-body">
+                <section class="chatbox-manager-panel chatbox-manager-search-panel">
+                  <div class="chatbox-manager-panel-header">
+                    <div>
+                      <div class="chatbox-manager-panel-title">搜索当前聊天框</div>
+                      <div class="chatbox-manager-panel-hint">文字、图片描述、表情包说明等都会参与搜索</div>
+                    </div>
+                  </div>
+                  <div class="chatbox-manager-search-bar">
+                    <input
+                      type="text"
+                      id="chatboxManagerSearchInput"
+                      class="chatbox-manager-search-input"
+                      placeholder="搜索当前聊天框的聊天记录"
+                      oninput="handleChatboxManagerSearchInput()"
+                    />
+                    <button class="chatbox-manager-search-clear" type="button" onclick="clearChatboxManagerSearch()" aria-label="清空搜索">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="chatbox-manager-search-meta" id="chatboxManagerSearchMeta">
+                    输入关键词后，可直接跳转到对应消息位置
+                  </div>
+                  <div class="chatbox-manager-search-results" id="chatboxManagerSearchResults">
+                    <div class="chatbox-manager-empty">
+                      <div class="chatbox-manager-empty-title">还没有开始搜索</div>
+                      <div class="chatbox-manager-empty-text">输入关键词后，可在当前聊天框内定位文字和媒体消息</div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="chatbox-manager-panel chatbox-manager-session-panel">
+                  <div class="chatbox-manager-panel-header">
+                    <div>
+                      <div class="chatbox-manager-panel-title">聊天框列表</div>
+                      <div class="chatbox-manager-panel-hint" id="chatboxManagerSessionSummary">为当前角色管理多个独立聊天框</div>
+                    </div>
+                    <button class="chatbox-manager-create-btn" type="button" onclick="createNewChatSession()">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                      新建
+                    </button>
+                  </div>
+                  <div id="chatSessionsList" class="chatbox-manager-session-list">
+                    <!-- 动态加载聊天框列表 -->
+                  </div>
+                </section>
+              </div>
             </div>
           </div>
 
@@ -3445,6 +4553,141 @@
                     <span>气泡区HTML</span>
                   </div>
                   <textarea class="theme-editor-css-textarea" id="overallBubbleHTMLTextarea" placeholder="<!-- 气泡区装饰HTML -->" spellcheck="false" oninput="onOverallHTMLInput('bubble')"></textarea>
+                </div>
+
+                <!-- 气泡标签页专用：聊天主题高级设置 -->
+                <div class="theme-editor-section theme-editor-bubble-settings-section" id="themeEditorBubbleSettingsSection" style="display:none;">
+                  <div class="theme-editor-section-header">
+                    <span>聊天主题</span>
+                  </div>
+                  <div class="theme-editor-css-hint">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" stroke-linecap="round" />
+                    </svg>
+                    <span>调整气泡预览、尺寸和配色，和上方气泡预设共同生效</span>
+                  </div>
+                  <div class="theme-editor-bubble-settings-shell">
+                    <!-- 💅 实时预览框 -->
+                    <div class="theme-preview-container">
+                      <div class="theme-preview-label">实时预览</div>
+                      <div class="theme-preview-bubbles">
+                        <!-- 角色气泡 -->
+                        <div class="theme-preview-message character">
+                          <div class="theme-preview-bubble" id="themePreviewCharacter">
+                            这是角色的消息示例
+                          </div>
+                        </div>
+                        <!-- 用户气泡 -->
+                        <div class="theme-preview-message user">
+                          <div class="theme-preview-bubble" id="themePreviewUser">
+                            这是用户的消息示例
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 气泡样式已迁移到主题编辑器，保留hidden input供兼容 -->
+                    <input type="hidden" id="chatThemeBubbleStyle" value="default" />
+
+                    <!-- 气泡大小调整 -->
+                    <div class="theme-control-group">
+                      <label class="theme-label">
+                        <span class="theme-label-text">气泡大小</span>
+                        <span class="theme-label-value" id="chatThemeBubbleSizeValue">1.0</span>
+                      </label>
+                      <div class="theme-slider-container">
+                        <input type="range" class="theme-slider" id="chatThemeBubbleSize" min="0.6" max="1.6" step="0.1" value="1.0" oninput="handleChatThemeBubbleSizeInput(this.value);" />
+                        <div class="theme-slider-track"></div>
+                        <div class="theme-slider-labels">
+                          <span>紧凑</span>
+                          <span>标准</span>
+                          <span>宽松</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 用户气泡颜色 -->
+                    <div class="theme-control-group">
+                      <div class="theme-group-header">
+                        <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 6px;">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+                          <circle cx="12" cy="7" r="4" stroke="currentColor" fill="none" stroke-width="2"/>
+                        </svg>
+                        <span>用户气泡</span>
+                      </div>
+                      <div class="theme-color-grid">
+                        <div class="theme-color-item">
+                          <label class="theme-color-label">边框</label>
+                          <div class="theme-color-input-wrapper">
+                            <input type="color" class="theme-color-input" id="chatThemeUserBorder" value="#e0e0e0" oninput="applyChatSettingsThemePreview();" />
+                            <div class="theme-color-preview"></div>
+                          </div>
+                        </div>
+                        <div class="theme-color-item">
+                          <label class="theme-color-label">背景</label>
+                          <div class="theme-color-input-wrapper">
+                            <input type="color" class="theme-color-input" id="chatThemeUserBackground" value="#ffffff" oninput="applyChatSettingsThemePreview();" />
+                            <div class="theme-color-preview"></div>
+                          </div>
+                        </div>
+                        <div class="theme-color-item">
+                          <label class="theme-color-label">文字</label>
+                          <div class="theme-color-input-wrapper">
+                            <input type="color" class="theme-color-input" id="chatThemeUserText" value="#000000" oninput="applyChatSettingsThemePreview();" />
+                            <div class="theme-color-preview"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 角色气泡颜色 -->
+                    <div class="theme-control-group">
+                      <div class="theme-group-header">
+                        <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 6px;">
+                          <path d="M18 8A6 6 0 1 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span>角色气泡</span>
+                      </div>
+                      <div class="theme-color-grid">
+                        <div class="theme-color-item">
+                          <label class="theme-color-label">边框</label>
+                          <div class="theme-color-input-wrapper">
+                            <input type="color" class="theme-color-input" id="chatThemeCharacterBorder" value="#e0e0e0" oninput="applyChatSettingsThemePreview();" />
+                            <div class="theme-color-preview"></div>
+                          </div>
+                        </div>
+                        <div class="theme-color-item">
+                          <label class="theme-color-label">背景</label>
+                          <div class="theme-color-input-wrapper">
+                            <input type="color" class="theme-color-input" id="chatThemeCharacterBackground" value="#f5f5f5" oninput="applyChatSettingsThemePreview();" />
+                            <div class="theme-color-preview"></div>
+                          </div>
+                        </div>
+                        <div class="theme-color-item">
+                          <label class="theme-color-label">文字</label>
+                          <div class="theme-color-input-wrapper">
+                            <input type="color" class="theme-color-input" id="chatThemeCharacterText" value="#000000" oninput="applyChatSettingsThemePreview();" />
+                            <div class="theme-color-preview"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 重置按钮 -->
+                    <div class="theme-control-group" style="margin-top: 20px;">
+                      <button class="theme-reset-btn" onclick="resetChatTheme()">
+                        <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 6px;">
+                          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M21 3v5h-5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M3 21v-5h5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        重置为默认主题
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
               </div>
@@ -5512,138 +6755,6 @@ top: var(--app-header-total-padding, 20px);
               </div>
             </div>
 
-            <!-- 聊天主题 -->
-            <div class="settings-section">
-              <div class="settings-section-header">
-                <span>聊天主题</span>
-                <svg class="theme-star-icon" viewBox="0 0 24 24" style="width: 10px; height: 10px; display: inline-block; margin-left: 6px; vertical-align: middle;">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
-                </svg>
-              </div>
-              <div class="settings-card chat-theme-card">
-                <!-- 💅 实时预览框 -->
-                <div class="theme-preview-container">
-                  <div class="theme-preview-label">实时预览</div>
-                  <div class="theme-preview-bubbles">
-                    <!-- 角色气泡 -->
-                    <div class="theme-preview-message character">
-                      <div class="theme-preview-bubble" id="themePreviewCharacter">
-                        这是角色的消息示例
-                      </div>
-                    </div>
-                    <!-- 用户气泡 -->
-                    <div class="theme-preview-message user">
-                      <div class="theme-preview-bubble" id="themePreviewUser">
-                        这是用户的消息示例
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 气泡样式已迁移到主题编辑器，保留hidden input供兼容 -->
-                <input type="hidden" id="chatThemeBubbleStyle" value="default" />
-
-                <!-- 气泡大小调整 -->
-                <div class="theme-control-group">
-                  <label class="theme-label">
-                    <span class="theme-label-text">气泡大小</span>
-                    <span class="theme-label-value" id="chatThemeBubbleSizeValue">1.0</span>
-                  </label>
-                  <div class="theme-slider-container">
-                    <input type="range" class="theme-slider" id="chatThemeBubbleSize" min="0.6" max="1.6" step="0.1" value="1.0" oninput="handleChatThemeBubbleSizeInput(this.value);" />
-                    <div class="theme-slider-track"></div>
-                    <div class="theme-slider-labels">
-                      <span>紧凑</span>
-                      <span>标准</span>
-                      <span>宽松</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 用户气泡颜色 -->
-                <div class="theme-control-group">
-                  <div class="theme-group-header">
-                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 6px;">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
-                      <circle cx="12" cy="7" r="4" stroke="currentColor" fill="none" stroke-width="2"/>
-                    </svg>
-                    <span>用户气泡</span>
-                  </div>
-                  <div class="theme-color-grid">
-                    <div class="theme-color-item">
-                      <label class="theme-color-label">边框</label>
-                      <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeUserBorder" value="#e0e0e0" oninput="applyChatSettingsThemePreview();" />
-                        <div class="theme-color-preview"></div>
-                      </div>
-                    </div>
-                    <div class="theme-color-item">
-                      <label class="theme-color-label">背景</label>
-                      <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeUserBackground" value="#ffffff" oninput="applyChatSettingsThemePreview();" />
-                        <div class="theme-color-preview"></div>
-                      </div>
-                    </div>
-                    <div class="theme-color-item">
-                      <label class="theme-color-label">文字</label>
-                      <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeUserText" value="#000000" oninput="applyChatSettingsThemePreview();" />
-                        <div class="theme-color-preview"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 角色气泡颜色 -->
-                <div class="theme-control-group">
-                  <div class="theme-group-header">
-                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 6px;">
-                      <path d="M18 8A6 6 0 1 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    <span>角色气泡</span>
-                  </div>
-                  <div class="theme-color-grid">
-                    <div class="theme-color-item">
-                      <label class="theme-color-label">边框</label>
-                      <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeCharacterBorder" value="#e0e0e0" oninput="applyChatSettingsThemePreview();" />
-                        <div class="theme-color-preview"></div>
-                      </div>
-                    </div>
-                    <div class="theme-color-item">
-                      <label class="theme-color-label">背景</label>
-                      <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeCharacterBackground" value="#f5f5f5" oninput="applyChatSettingsThemePreview();" />
-                        <div class="theme-color-preview"></div>
-                      </div>
-                    </div>
-                    <div class="theme-color-item">
-                      <label class="theme-color-label">文字</label>
-                      <div class="theme-color-input-wrapper">
-                        <input type="color" class="theme-color-input" id="chatThemeCharacterText" value="#000000" oninput="applyChatSettingsThemePreview();" />
-                        <div class="theme-color-preview"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 重置按钮 -->
-                <div class="theme-control-group" style="margin-top: 20px;">
-                  <button class="theme-reset-btn" onclick="resetChatTheme()">
-                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 6px;">
-                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M21 3v5h-5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M3 21v-5h5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    重置为默认主题
-                  </button>
-                </div>
-
-              </div>
-            </div>
-
             <!-- 聊天背景 -->
             <div class="settings-section">
               <div class="settings-section-header">聊天背景</div>
@@ -6138,29 +7249,6 @@ top: var(--app-header-total-padding, 20px);
                   </div>
                 </div>
 
-              </div>
-            </div>
-
-            <!-- 多开聊天框 -->
-            <div class="settings-section">
-              <div class="settings-section-header">多开聊天框</div>
-              <div class="settings-card">
-                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6;">
-                  为当前角色创建多个独立的聊天框，每个聊天框保存独立的对话历史
-                </div>
-
-                <!-- 聊天框列表 -->
-                <div id="chatSessionsList" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
-                  <!-- 动态加载聊天框列表 -->
-                </div>
-
-                <!-- 操作按钮：新建聊天框 -->
-                <button class="settings-btn" onclick="createNewChatSession()" style="width: 100%;">
-                  <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-right: 6px;">
-                    <path d="M12 5v14m-7-7h14" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" fill="none" stroke-width="2" />
-                  </svg>
-                  新建聊天框
-                </button>
               </div>
             </div>
 
@@ -6772,38 +7860,22 @@ top: var(--app-header-total-padding, 20px);
             </div>
           </div>
 
-          <!-- Profile Card - 主题统计卡片 -->
-          <div class="appearance-profile-card">
-            <div class="appearance-profile-header">
-              <div class="appearance-profile-avatar">
+          <!-- Appearance Search - 外观设置搜索 -->
+          <div class="appearance-search-shell">
+            <div class="appearance-search-field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="M20 20l-3.5-3.5" stroke-linecap="round"></path>
+              </svg>
+              <input type="search" id="appearanceSearchInput" class="appearance-search-input" placeholder="搜索字体、颜色、壁纸、Dock、贴纸..." aria-label="搜索外观设置板块" autocomplete="off" spellcheck="false">
+              <button type="button" id="appearanceSearchClear" class="appearance-search-clear" aria-label="清空搜索" hidden>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" stroke-linecap="round" stroke-linejoin="round" />
-                  <circle cx="12" cy="12" r="3" />
+                  <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
-              </div>
-              <div class="appearance-profile-info">
-                <div class="appearance-profile-name">主题配置</div>
-                <div class="appearance-profile-bio">[ customize_your_theme ]</div>
-                <div style="margin-top: 8px">
-                  <span class="appearance-feature-badge">v2.0</span>
-                </div>
-              </div>
+              </button>
             </div>
-
-            <div class="appearance-profile-stats">
-              <div class="appearance-stat-item">
-                <div class="appearance-stat-value">12</div>
-                <div class="appearance-stat-label">主题</div>
-              </div>
-              <div class="appearance-stat-item">
-                <div class="appearance-stat-value">24</div>
-                <div class="appearance-stat-label">图标</div>
-              </div>
-              <div class="appearance-stat-item">
-                <div class="appearance-stat-value">8</div>
-                <div class="appearance-stat-label">字体</div>
-              </div>
-            </div>
+            <div class="appearance-search-meta">搜索外观设置中的板块标题，点击即可自动跳转</div>
+            <div class="appearance-search-results" id="appearanceSearchResults" hidden></div>
           </div>
 
           <!-- Settings Grid - 设置网格 -->
@@ -7799,7 +8871,7 @@ top: var(--app-header-total-padding, 20px);
 
           <!-- Header -->
           <div class="wallpaper-header icon-management-header">
-            <div class="wallpaper-title-area">
+            <div class="wallpaper-title-area" data-appearance-target="icon-manage">
               <svg class="wallpaper-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7" rx="1" />
                 <rect x="14" y="3" width="7" height="7" rx="1" />
@@ -7819,7 +8891,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 主屏图标区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="icon-home">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -8062,7 +9134,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- Dock 图标区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="icon-dock">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <rect x="3" y="18" width="18" height="4" rx="2" />
@@ -8341,18 +9413,6 @@ top: var(--app-header-total-padding, 20px);
       <!-- Modal Overlay -->
       <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 
-      <!-- Irregular Modal -->
-      <div class="irregular-modal" id="irregularModal">
-        <div class="modal-title">欢迎使用手机模拟器</div>
-        <div class="modal-content">
-          这是一个极简主义风格的移动端模拟器，采用清爽的设计、流畅的动画和专注于用户体验的交互。
-        </div>
-        <div class="modal-actions">
-          <div class="modal-btn" onclick="closeModal()">取消</div>
-          <div class="modal-btn primary" onclick="closeModal()">知道了</div>
-        </div>
-      </div>
-
       <!-- User Profile Edit Modal -->
       <div class="irregular-modal profile-modal" id="userProfileEditModal">
         <div class="modal-title">编辑资料</div>
@@ -8617,7 +9677,7 @@ top: var(--app-header-total-padding, 20px);
 
           <!-- Header -->
           <div class="wallpaper-header">
-            <div class="wallpaper-title-area">
+            <div class="wallpaper-title-area" data-appearance-target="wallpaper-manage">
               <svg class="wallpaper-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
                 <circle cx="8.5" cy="8.5" r="1.5" />
@@ -8639,7 +9699,7 @@ top: var(--app-header-total-padding, 20px);
           <div class="wallpaper-preview-section">
             <div class="wallpaper-dual-preview-grid">
               <!-- 主屏壁纸预览 -->
-              <div class="wallpaper-preview-card">
+              <div class="wallpaper-preview-card" data-appearance-target="wallpaper-home-preview">
                 <div class="preview-label">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 6px;">
                     <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -8655,7 +9715,7 @@ top: var(--app-header-total-padding, 20px);
               </div>
 
               <!-- 开机壁纸预览 -->
-              <div class="wallpaper-preview-card">
+              <div class="wallpaper-preview-card" data-appearance-target="wallpaper-boot-preview">
                 <div class="preview-label">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 6px;">
                     <circle cx="12" cy="12" r="10" />
@@ -8688,7 +9748,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 纯色壁纸生成器 -->
-          <div class="wallpaper-generator-section" id="solidGenerator" style="display: block;">
+          <div class="wallpaper-generator-section" id="solidGenerator" data-appearance-target="wallpaper-solid" style="display: block;">
             <div class="wallpaper-section-header">
               <span>纯色壁纸</span>
             </div>
@@ -8717,7 +9777,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 条纹壁纸生成器 -->
-          <div class="wallpaper-generator-section" id="stripeGenerator" style="display: none;">
+          <div class="wallpaper-generator-section" id="stripeGenerator" data-appearance-target="wallpaper-stripe" style="display: none;">
             <div class="wallpaper-section-header">
               <span>条纹壁纸</span>
             </div>
@@ -8749,7 +9809,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 波点壁纸生成器 -->
-          <div class="wallpaper-generator-section" id="dotGenerator" style="display: none;">
+          <div class="wallpaper-generator-section" id="dotGenerator" data-appearance-target="wallpaper-dot" style="display: none;">
             <div class="wallpaper-section-header">
               <span>波点壁纸</span>
             </div>
@@ -8776,7 +9836,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 自定义上传 -->
-          <div class="wallpaper-upload-section">
+          <div class="wallpaper-upload-section" data-appearance-target="wallpaper-upload">
             <div class="wallpaper-section-header">
               <span>上传壁纸</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
@@ -8785,7 +9845,7 @@ top: var(--app-header-total-padding, 20px);
             </div>
             <div class="wallpaper-upload-grid">
               <!-- 主屏壁纸上传 -->
-              <div class="wallpaper-upload-card" onclick="document.getElementById('homeWallpaperFileInput').click()">
+              <div class="wallpaper-upload-card" data-appearance-target="wallpaper-upload-home" onclick="document.getElementById('homeWallpaperFileInput').click()">
                 <div class="upload-card-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -8795,7 +9855,7 @@ top: var(--app-header-total-padding, 20px);
                 <div class="upload-card-desc">JPG, PNG, WebP</div>
               </div>
               <!-- 开机壁纸上传 -->
-              <div class="wallpaper-upload-card" onclick="document.getElementById('bootWallpaperFileInput').click()">
+              <div class="wallpaper-upload-card" data-appearance-target="wallpaper-upload-boot" onclick="document.getElementById('bootWallpaperFileInput').click()">
                 <div class="upload-card-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10" />
@@ -8811,7 +9871,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 开机动画选择器 -->
-          <div class="boot-animation-selector-section">
+          <div class="boot-animation-selector-section" data-appearance-target="wallpaper-boot-animation">
             <div class="wallpaper-section-header">
               <span>开机动画</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
@@ -8895,7 +9955,7 @@ top: var(--app-header-total-padding, 20px);
 
           <!-- Header -->
           <div class="wallpaper-header typography-header">
-            <div class="wallpaper-title-area">
+            <div class="wallpaper-title-area" data-appearance-target="typography-manage">
               <svg class="wallpaper-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 20h16M6 16h12M8 12h8M10 8h4" stroke-linecap="round" />
               </svg>
@@ -8912,7 +9972,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 主题切换区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="theme-mode">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" stroke-linecap="round" />
@@ -8992,7 +10052,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 字体管理区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="font-manage">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <path d="M4 7V4h16v3M9 20h6M12 4v16" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9001,7 +10061,7 @@ top: var(--app-header-total-padding, 20px);
             </div>
 
             <!-- 默认字体标签 -->
-            <div class="font-section-label">默认字体</div>
+            <div class="font-section-label" data-appearance-target="font-default">默认字体</div>
 
             <!-- 默认字体 - 横向滚动 -->
             <div class="default-fonts-scroll" id="defaultFontsGrid">
@@ -9637,14 +10697,14 @@ top: var(--app-header-total-padding, 20px);
 
             <!-- 自定义字体区域 - 横向滚动 -->
             <div class="custom-fonts-section" id="customFontsSection" style="display: none;">
-              <div class="font-section-label">自定义字体</div>
+              <div class="font-section-label" data-appearance-target="font-custom-list">自定义字体</div>
               <div class="custom-fonts-scroll" id="customFontsScroll">
                 <!-- 自定义字体卡片将动态添加到这里 -->
               </div>
             </div>
 
             <!-- 添加自定义字体 -->
-            <div class="add-custom-font-area">
+            <div class="add-custom-font-area" data-appearance-target="font-custom">
               <div class="custom-font-header">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; opacity: 0.6;">
                   <circle cx="12" cy="12" r="10"/>
@@ -9674,7 +10734,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 手机颜色管理区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="phone-colors">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <path d="M7 21a4 4 0 0 1-4-4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v12a4 4 0 0 1-4 4H7z" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9684,7 +10744,7 @@ top: var(--app-header-total-padding, 20px);
             </div>
 
             <!-- 颜色方案标签 -->
-            <div class="font-section-label">预设色系</div>
+            <div class="font-section-label" data-appearance-target="phone-colors-preset">预设色系</div>
 
             <!-- 颜色方案横向滚动 -->
             <div class="color-schemes-scroll" id="colorSchemesScroll">
@@ -9835,7 +10895,7 @@ top: var(--app-header-total-padding, 20px);
 
             <!-- 自定义颜色输入 -->
             <div class="add-custom-color-area">
-              <div class="custom-font-header">
+              <div class="custom-font-header" data-appearance-target="phone-colors-custom">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; opacity: 0.6;">
                   <circle cx="12" cy="12" r="10"/>
                   <line x1="12" y1="8" x2="12" y2="16" stroke-linecap="round"/>
@@ -9878,7 +10938,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 底栏切换区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="dock-style">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <rect x="3" y="16" width="18" height="5" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9890,7 +10950,7 @@ top: var(--app-header-total-padding, 20px);
             </div>
 
             <!-- 底栏样式标签 -->
-            <div class="font-section-label">底栏样式</div>
+            <div class="font-section-label" data-appearance-target="dock-style-options">底栏样式</div>
 
             <!-- 底栏样式横向滚动 -->
             <div class="dock-styles-scroll" id="dockStylesScroll">
@@ -9966,7 +11026,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 顶部间距调整区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="top-padding">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <path d="M12 5v14M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9975,7 +11035,7 @@ top: var(--app-header-total-padding, 20px);
             </div>
 
             <!-- 快捷预设按钮 -->
-            <div class="font-section-label">快捷预设</div>
+            <div class="font-section-label" data-appearance-target="top-padding-presets">快捷预设</div>
             <div class="padding-preset-buttons">
               <button class="padding-preset-btn active" data-value="0" onclick="selectPaddingPreset(0)">
                 <span class="preset-value">0px</span>
@@ -10000,7 +11060,7 @@ top: var(--app-header-total-padding, 20px);
             </div>
 
             <!-- 自定义输入 -->
-            <div class="font-section-label" style="margin-top: 20px;">自定义数值</div>
+            <div class="font-section-label" data-appearance-target="top-padding-custom" style="margin-top: 20px;">自定义数值</div>
             <div class="custom-padding-input-row">
               <div class="custom-padding-input-wrapper">
                 <input type="number" id="customTopPaddingInput" class="custom-padding-input" min="-50" max="100" step="1" value="0" placeholder="0" onkeypress="if(event.key==='Enter') applyCustomTopPadding()">
@@ -10031,7 +11091,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 全屏适配区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="fullscreen-adapt">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -10112,7 +11172,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 铃声管理区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="ringtone-manage">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-12 0v3.2c0 .53-.21 1.04-.6 1.4L4 17h5m6 0a3 3 0 0 1-6 0" stroke-linecap="round" stroke-linejoin="round"/>
@@ -10120,26 +11180,97 @@ top: var(--app-header-total-padding, 20px);
               <span>铃声管理</span>
             </div>
 
-            <div class="font-section-label">全局信息铃声</div>
-            <div class="custom-padding-input-row">
-              <div class="custom-padding-input-wrapper" style="flex: 1;">
-                <input type="text" id="globalMessageRingtoneInput" class="custom-padding-input" placeholder="https://example.com/message.mp3" onkeypress="if(event.key==='Enter') saveGlobalRingtoneSettings()">
+            <div class="appearance-settings-panel ringtone-settings-panel">
+              <div class="appearance-settings-row" data-appearance-target="ringtone-message">
+                <div class="appearance-settings-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="appearance-settings-copy">
+                  <div class="appearance-settings-name">全局信息铃声</div>
+                  <div class="appearance-settings-desc">角色消息与普通提醒的默认音频</div>
+                </div>
+                <div class="appearance-settings-control">
+                  <input type="text" id="globalMessageRingtoneInput" class="appearance-settings-input" placeholder="https://example.com/message.mp3" onkeypress="if(event.key==='Enter') saveGlobalRingtoneSettings()">
+                </div>
+              </div>
+
+              <div class="appearance-settings-row" data-appearance-target="ringtone-call">
+                <div class="appearance-settings-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.9 19.9 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.9 19.9 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.35 1.89.66 2.78a2 2 0 0 1-.45 2.11L8.05 9.88a16 16 0 0 0 6.07 6.07l1.27-1.27a2 2 0 0 1 2.11-.45c.89.31 1.82.53 2.78.66A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="appearance-settings-copy">
+                  <div class="appearance-settings-name">全局来电铃声</div>
+                  <div class="appearance-settings-desc">语音通话与来电提醒的默认音频</div>
+                </div>
+                <div class="appearance-settings-control">
+                  <input type="text" id="globalCallRingtoneInput" class="appearance-settings-input" placeholder="https://example.com/call.mp3" onkeypress="if(event.key==='Enter') saveGlobalRingtoneSettings()">
+                </div>
+              </div>
+
+              <div class="appearance-settings-footer">
+                <div class="appearance-settings-note">留空则不使用铃声，聊天可单独覆盖该设置</div>
+                <button class="appearance-settings-action" onclick="saveGlobalRingtoneSettings()" type="button">保存铃声</button>
               </div>
             </div>
+          </div>
 
-            <div class="font-section-label" style="margin-top: 16px;">全局来电铃声</div>
-            <div class="custom-padding-input-row">
-              <div class="custom-padding-input-wrapper" style="flex: 1;">
-                <input type="text" id="globalCallRingtoneInput" class="custom-padding-input" placeholder="https://example.com/call.mp3" onkeypress="if(event.key==='Enter') saveGlobalRingtoneSettings()">
-              </div>
-            </div>
-
-            <div class="custom-font-hint">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px; margin-right: 6px; opacity: 0.4;">
+          <!-- 启动提示区域 -->
+          <div class="typography-section" data-appearance-target="boot-ready-notification">
+            <div class="typography-section-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M12 16v-4M12 8h.01" stroke-linecap="round"/>
               </svg>
-              <span>留空则不使用铃声，聊天可单独覆盖该设置</span>
+              <span>启动提示</span>
+            </div>
+
+            <div class="appearance-settings-panel boot-ready-settings-panel">
+              <div class="appearance-settings-row">
+                <div class="appearance-settings-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="appearance-settings-copy">
+                  <div class="appearance-settings-name">加载完成通知</div>
+                  <div class="appearance-settings-desc">进入手机后，用灵动岛提示本次启动已完成</div>
+                </div>
+                <div class="appearance-settings-toggle">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="bootReadyNotificationToggle" onchange="toggleBootReadyNotificationEnabled()">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="appearance-settings-row compact" id="bootReadyNotificationTitleRow">
+                <div class="appearance-settings-copy">
+                  <div class="appearance-settings-name">通知标题</div>
+                  <div class="appearance-settings-desc">灵动岛第一行文字</div>
+                </div>
+                <div class="appearance-settings-control">
+                  <input type="text" id="bootReadyNotificationTitleInput" class="appearance-settings-input" placeholder="欢迎" maxlength="24" onkeypress="if(event.key==='Enter') saveBootReadyNotificationSettings()">
+                </div>
+              </div>
+
+              <div class="appearance-settings-row compact" id="bootReadyNotificationSubtitleRow">
+                <div class="appearance-settings-copy">
+                  <div class="appearance-settings-name">通知副标题</div>
+                  <div class="appearance-settings-desc">灵动岛第二行文字</div>
+                </div>
+                <div class="appearance-settings-control">
+                  <input type="text" id="bootReadyNotificationSubtitleInput" class="appearance-settings-input" placeholder="手机模拟器已就绪" maxlength="60" onkeypress="if(event.key==='Enter') saveBootReadyNotificationSettings()">
+                </div>
+              </div>
+
+              <div class="appearance-settings-footer">
+                <div class="appearance-settings-note">这里只影响启动完成后的那条灵动岛提示</div>
+                <button class="appearance-settings-action" onclick="saveBootReadyNotificationSettings()" type="button">保存提示</button>
+              </div>
             </div>
           </div>
         </div>
@@ -10159,7 +11290,7 @@ top: var(--app-header-total-padding, 20px);
 
           <!-- Header -->
           <div class="wallpaper-header typography-header">
-            <div class="wallpaper-title-area">
+            <div class="wallpaper-title-area" data-appearance-target="sticker-manage">
               <svg class="wallpaper-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10" />
                 <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke-linecap="round" />
@@ -10177,7 +11308,7 @@ top: var(--app-header-total-padding, 20px);
           </div>
 
           <!-- 手机框贴纸上传区域 -->
-          <div class="typography-section">
+          <div class="typography-section" data-appearance-target="sticker-frame">
             <div class="typography-section-header">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px; opacity: 0.6;">
                 <path d="M7 21a4 4 0 0 1-4-4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v12a4 4 0 0 1-4 4H7z" stroke-linecap="round" stroke-linejoin="round"/>
@@ -11078,6 +12209,73 @@ top: var(--app-header-total-padding, 20px);
 
         </div>
       </div>
+
+      <!-- 日记悬浮球 -->
+      <div id="diaryFabWrapper" class="diary-fab-wrapper" aria-label="日记快捷操作">
+        <div id="diaryFabBall" class="diary-fab-ball" role="button" tabindex="0" aria-label="打开日记快捷菜单" onclick="diaryFabToggleMenu(event)">
+          <svg class="diary-fab-icon-default" viewBox="0 0 24 24">
+            <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
+            <line x1="16" y1="8" x2="2" y2="22"></line>
+            <line x1="17.5" y1="15" x2="9" y2="15"></line>
+          </svg>
+          <img id="diaryFabCustomImg" class="diary-fab-custom-img" src="" alt="custom-style">
+        </div>
+
+        <div id="diaryFabMenu" class="diary-fab-menu" aria-label="日记快捷菜单">
+          <button class="diary-fab-menu-item" type="button" onclick="diaryFabOpenIndex()">
+            <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            <span>目录</span>
+          </button>
+          <button class="diary-fab-menu-item" type="button" onclick="diaryFabFlip(-1)">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            <span>上一篇</span>
+          </button>
+          <button class="diary-fab-menu-item" type="button" onclick="diaryFabFlip(1)">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            <span>下一篇</span>
+          </button>
+          <button class="diary-fab-menu-item" type="button" onclick="diaryFabToggleStylePanel(event)">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 7h7M9 11h5"></path></svg>
+            <span>日记样式</span>
+          </button>
+          <label class="diary-fab-menu-item" for="diaryFabStyleUpload">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>切换样式</span>
+          </label>
+          <input type="file" id="diaryFabStyleUpload" accept="image/*, image/gif">
+          <div class="diary-fab-size-control">
+            <div class="diary-fab-control-head">
+              <span>小球大小</span>
+              <b id="diaryFabSizeValue">50px</b>
+            </div>
+            <input type="range" id="diaryFabSizeInput" min="32" max="88" value="50" oninput="diaryFabSetSize(this.value)">
+          </div>
+          <button class="diary-fab-menu-item exit" type="button" onclick="diaryFabExit()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span>退出日记</span>
+          </button>
+        </div>
+
+        <div id="diaryFabStylePanel" class="diary-fab-style-panel" aria-label="日记样式设置">
+          <div class="diary-fab-style-title">日记样式</div>
+          <label class="diary-fab-style-field">
+            <span>正文字号 <b id="diaryBodyFontSizeValue">10px</b></span>
+            <input type="range" id="diaryBodyFontSizeInput" min="9" max="18" value="10" oninput="diaryStyleSetFontSize(this.value)">
+          </label>
+          <label class="diary-fab-style-field">
+            <span>纸张颜色</span>
+            <input type="color" id="diaryPageColorInput" value="#fdf8ef" oninput="diaryStyleSetPageColor(this.value)">
+          </label>
+          <label class="diary-fab-style-field">
+            <span>正文字体</span>
+            <select id="diaryFontSelect" onchange="diaryStyleSetFont(this.value)"></select>
+          </label>
+          <div class="diary-fab-style-actions">
+            <button type="button" onclick="diaryStyleUseGlobalFont()">同步全局字体</button>
+            <button type="button" onclick="diaryStyleReset()">重置</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -11251,8 +12449,9 @@ top: var(--app-header-total-padding, 20px);
     <div class="call-floating-pulse"></div>
   </div>
   
-  <script src="ovo-call.js" defer></script>
-  <script src="ovo-script.js" defer></script>
+  <script src="ovo-call.js?v=2026-07-13-web-auto-update-1" defer></script>
+  <script src="ovo-update-logs.js?v=2026-07-13-web-auto-update-1" defer></script>
+  <script src="ovo-script.js?v=2026-07-13-web-auto-update-1" defer></script>
 
 </body>
 </html>
